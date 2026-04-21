@@ -37,25 +37,35 @@ export default function Home() {
 
       {/* POPUP */}
       {popupOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-6 px-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setPopupOpen(false)} />
-          <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-[#C84739] via-[#36488F] to-[#00C9A2]" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(15,20,40,0.55)' }}>
+          <div className="absolute inset-0" onClick={() => setPopupOpen(false)} />
+          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-1.5 bg-gradient-to-r from-[#C84739] via-[#36488F] to-[#00C9A2]" />
             <button onClick={() => setPopupOpen(false)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors text-sm font-bold">✕</button>
-            <div className="px-8 pt-8 pb-8">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-3">QUICK QUESTION</div>
-              <h2 className="text-2xl font-black text-[#272F4F] leading-tight mb-3">
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors text-sm font-bold">✕</button>
+            <div className="px-10 pt-9 pb-9">
+              <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-4">QUICK QUESTION</div>
+              <h2 className="text-3xl font-black text-[#272F4F] leading-tight mb-4">
                 Something's not adding up… right?
               </h2>
-              <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-                5 minutes. 12 questions. You'll get a free personalized Money Picture — showing exactly what's working and what's quietly draining you.
+              <p className="text-gray-500 text-base mb-6 leading-relaxed">
+                Take the free Money Selfie. See exactly what's working and what's quietly draining you.
               </p>
+              <div className="flex items-center gap-2 text-sm text-gray-400 mb-8">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" />
+                <span>5 minutes</span>
+                <span className="text-gray-200 mx-1">·</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" />
+                <span>12 questions</span>
+                <span className="text-gray-200 mx-1">·</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" />
+                <span>Free — no credit card</span>
+              </div>
               <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-                className="block w-full text-center bg-[#C84739] hover:bg-[#A63A2F] text-white font-black py-4 rounded-2xl transition-all duration-200 text-[15px] shadow-lg shadow-red-100 hover:shadow-red-200 hover:scale-[1.02]">
+                className="block w-full text-center bg-[#C84739] hover:bg-[#A63A2F] text-white font-black py-4 rounded-2xl transition-all duration-200 text-base shadow-lg shadow-red-100 hover:scale-[1.01]">
                 Show Me What's Going On →
               </a>
-              <p className="text-center text-xs text-gray-400 mt-3">Free · No credit card · No sales call</p>
+              <p className="text-center text-xs text-gray-400 mt-4">No sales call · Instant results</p>
             </div>
           </div>
         </div>
@@ -153,30 +163,30 @@ export default function Home() {
 
       {/* THE TRAP */}
       <section className="py-28 bg-white">
-        <div className="max-w-3xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6">
           <FadeIn>
-            <div className="text-[10px] font-black tracking-[0.2em] text-[#36488F] mb-4">THE TRAP</div>
-            <h2 className="text-4xl md:text-5xl font-black text-[#272F4F] leading-tight mb-8">The "Better" Illusion</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div>
+            <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">The "Better" Illusion</h2>
+            <p className="text-gray-600 text-xl leading-relaxed mb-6">
               Most people don't fail because they are lazy. They fail because they are{' '}
               <strong className="text-[#272F4F]">efficient at the wrong things.</strong>
             </p>
-            <p className="text-gray-600 text-lg mb-5">You've fallen for the Improvement Loop:</p>
-            <div className="space-y-3 mb-10">
+            <p className="text-gray-500 text-xl mb-6">You've fallen for the Improvement Loop:</p>
+            <div className="space-y-4 mb-12">
               {['You buy the course.', 'You start the diet.', 'You wake up at 5 AM.'].map((item, i) => (
                 <FadeIn key={item} delay={i * 80}>
-                  <div className="flex items-center gap-4 bg-gray-50 rounded-2xl px-6 py-4 border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div className="w-2 h-2 rounded-full bg-[#C84739] flex-shrink-0" />
-                    <span className="text-gray-700 font-semibold">{item}</span>
+                  <div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100 hover:border-gray-200 transition-colors">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#C84739] flex-shrink-0" />
+                    <span className="text-gray-800 font-bold text-lg">{item}</span>
                   </div>
                 </FadeIn>
               ))}
             </div>
-            <p className="text-gray-600 text-lg leading-relaxed mb-8">
+            <p className="text-gray-600 text-xl leading-relaxed mb-10">
               It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.
             </p>
-            <div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-8 py-6">
-              <p className="text-[#C84739] font-black text-xl leading-snug">
+            <div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-10 py-8">
+              <p className="text-[#C84739] font-black text-2xl leading-snug">
                 You're building a castle on a treadmill — and the timer is running out.
               </p>
             </div>
@@ -186,20 +196,20 @@ export default function Home() {
 
       {/* ROOT CAUSE */}
       <section className="py-28 bg-[#F4F5F8]">
-        <div className="max-w-3xl mx-auto px-6 text-center">
+        <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
-            <div className="text-[10px] font-black tracking-[0.2em] text-[#36488F] mb-4">ROOT CAUSE</div>
-            <h2 className="text-4xl md:text-5xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2>
-            <p className="text-gray-600 text-lg mb-10">Self-improvement is a scam when sold as a collection of habits.</p>
-            <div className="border-t-2 border-b-2 border-[#272F4F]/10 py-10 my-8">
-              <p className="text-3xl md:text-4xl font-black italic text-[#272F4F] leading-tight">
+            <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">ROOT CAUSE</div>
+            <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2>
+            <p className="text-gray-600 text-xl mb-10">Self-improvement is a scam when sold as a collection of habits.</p>
+            <div className="border-t-2 border-b-2 border-[#272F4F]/10 py-12 my-10">
+              <p className="text-4xl md:text-5xl font-black italic text-[#272F4F] leading-tight">
                 "A pile of bricks isn't a house.<br />A pile of habits isn't a life."
               </p>
             </div>
-            <div className="bg-[#272F4F] text-white rounded-2xl px-8 py-6 mb-10">
-              <p className="text-xl font-black">If your growth isn't structural, it's decorative.</p>
+            <div className="bg-[#272F4F] text-white rounded-2xl px-10 py-8 mb-10">
+              <p className="text-2xl font-black">If your growth isn't structural, it's decorative.</p>
             </div>
-            <p className="text-gray-600 text-lg leading-relaxed">
+            <p className="text-gray-600 text-xl leading-relaxed">
               Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about{' '}
               <strong className="text-[#272F4F]">Integration.</strong> When your income feeds your energy, and your energy fuels your direction, growth becomes the path of least resistance.
             </p>
@@ -248,29 +258,29 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-16">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#36488F] mb-4">THE TRANSFORMATION</div>
-              <h2 className="text-4xl md:text-5xl font-black text-[#272F4F] leading-tight">From Effort to Momentum</h2>
-              <p className="text-gray-400 mt-4 text-lg">In 90 days, the feeling of work changes.</p>
+              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRANSFORMATION</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">From Effort to Momentum</h2>
+              <p className="text-gray-400 mt-5 text-xl">In 90 days, the feeling of work changes.</p>
             </div>
           </FadeIn>
-          <div className="grid md:grid-cols-3 gap-6 mb-14">
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
             {[
               { title: 'The Fog Clears', desc: 'You stop asking "What should I do?" and start executing the obvious.', num: '01' },
               { title: 'The Floor Rises', desc: 'Your bad days become more productive than your old good days.', num: '02' },
               { title: 'The Baseline Stacks', desc: 'Your income and health finally start trending in the same direction.', num: '03' },
             ].map((item, i) => (
               <FadeIn key={item.title} delay={i * 100}>
-                <div className="bg-[#F4F5F8] rounded-2xl p-8 border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 h-full">
-                  <div className="text-[10px] font-black text-[#C84739] tracking-widest mb-5">{item.num}</div>
-                  <h3 className="font-black text-[#272F4F] text-2xl mb-4">{item.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+                <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 h-full">
+                  <div className="text-xs font-black text-[#C84739] tracking-widest mb-5">{item.num}</div>
+                  <h3 className="font-black text-[#272F4F] text-3xl mb-5">{item.title}</h3>
+                  <p className="text-gray-500 text-lg leading-relaxed">{item.desc}</p>
                 </div>
               </FadeIn>
             ))}
           </div>
           <FadeIn>
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-black italic text-[#272F4F]">
+              <p className="text-3xl md:text-4xl font-black italic text-[#272F4F]">
                 Stop hunting for breakthroughs.<br />Start trusting the output.
               </p>
             </div>
@@ -327,29 +337,29 @@ export default function Home() {
       <section className="py-28 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <div className="text-center mb-12">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#36488F] mb-4">FIT CHECK</div>
-              <h2 className="text-4xl md:text-5xl font-black text-[#272F4F]">Be honest with yourself.</h2>
+            <div className="text-center mb-14">
+              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">FIT CHECK</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Be honest with yourself.</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white border-2 border-[#00C9A2]/30 rounded-2xl p-8 hover:border-[#00C9A2]/60 transition-colors">
-                <div className="text-[10px] font-black tracking-widest text-[#00A380] mb-6">THIS IS FOR YOU IF</div>
-                <div className="space-y-5">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white border-2 border-[#00C9A2]/30 rounded-2xl p-10 hover:border-[#00C9A2]/60 transition-colors">
+                <div className="text-xs font-black tracking-widest text-[#00A380] mb-8">THIS IS FOR YOU IF</div>
+                <div className="space-y-6">
                   {['You are already successful but feel remarkably fragile.', 'You hate hacks and want a permanent operating system.', 'You are ready to kill good opportunities to hunt great ones.'].map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-black">✓</div>
-                      <p className="text-gray-700 leading-relaxed">{item}</p>
+                    <div key={item} className="flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✓</div>
+                      <p className="text-gray-700 text-lg leading-relaxed">{item}</p>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="bg-[#F4F5F8] rounded-2xl p-8 border border-gray-200">
-                <div className="text-[10px] font-black tracking-widest text-gray-400 mb-6">DO NOT JOIN IF</div>
-                <div className="space-y-5">
+              <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-200">
+                <div className="text-xs font-black tracking-widest text-gray-400 mb-8">DO NOT JOIN IF</div>
+                <div className="space-y-6">
                   {['You are a content junkie who never builds.', 'You prioritize looking busy over being effective.', 'You think more effort is the solution to a broken system.'].map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-black">✕</div>
-                      <p className="text-gray-400 leading-relaxed">{item}</p>
+                    <div key={item} className="flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✕</div>
+                      <p className="text-gray-400 text-lg leading-relaxed">{item}</p>
                     </div>
                   ))}
                 </div>
@@ -439,13 +449,13 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="py-24 bg-[#F4F5F8]">
-        <div className="max-w-2xl mx-auto px-6">
+        <div className="max-w-3xl mx-auto px-6">
           <FadeIn>
-            <div className="text-center mb-12">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#36488F] mb-4">FAQ</div>
-              <h2 className="text-3xl font-black text-[#272F4F]">Common questions, honest answers.</h2>
+            <div className="text-center mb-14">
+              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">FAQ</div>
+              <h2 className="text-4xl md:text-5xl font-black text-[#272F4F]">Common questions,<br />honest answers.</h2>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {[
                 { q: 'Is the audit free?', a: 'Yes. The 12 questions and your full Money Picture report are completely free. No credit card required.' },
                 { q: 'Why the $99?', a: 'Because free programs get treated like free programs. We also refund it completely — if you do the work, you don\'t pay anything. So the real question is: are you serious enough to put $99 down knowing you get it back?' },
@@ -453,11 +463,11 @@ export default function Home() {
                 { q: 'What are the 10 days like?', a: 'About 30 minutes a day. Read a few pages, watch a short video, send a brief note. Two live conversations with Kanth and Shaku — that\'s where real clarity tends to happen.' },
               ].map((faq) => (
                 <details key={faq.q} className="bg-white rounded-2xl border border-gray-100 overflow-hidden group cursor-pointer">
-                  <summary className="px-6 py-5 font-black text-[#272F4F] flex items-center justify-between hover:bg-gray-50 transition-colors list-none">
+                  <summary className="px-8 py-6 font-black text-[#272F4F] text-xl flex items-center justify-between hover:bg-gray-50 transition-colors list-none">
                     {faq.q}
-                    <span className="text-[#C84739] font-black text-xl group-open:rotate-45 transition-transform duration-300 flex-shrink-0 ml-4 leading-none">+</span>
+                    <span className="text-[#C84739] font-black text-2xl group-open:rotate-45 transition-transform duration-300 flex-shrink-0 ml-4 leading-none">+</span>
                   </summary>
-                  <div className="px-6 pb-5 text-gray-600 leading-relaxed text-[15px]">{faq.a}</div>
+                  <div className="px-8 pb-6 text-gray-600 leading-relaxed text-lg">{faq.a}</div>
                 </details>
               ))}
             </div>
