@@ -74,11 +74,8 @@ export default function Home() {
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="MyGrowth Academy" width={36} height={36} className="rounded-xl" />
-            <span className="font-black text-[#272F4F] text-base hidden sm:block">
-              my<span className="text-[#C84739]">Growth</span><span className="text-[#00C9A2]">↗</span><span className="text-gray-400 font-medium text-sm">.academy</span>
-            </span>
+          <div className="flex items-center">
+            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '40px', width: 'auto' }} />
           </div>
           <div className="hidden md:flex items-center gap-8">
             {['#system', '#results', '#founders'].map((href, i) => (
@@ -123,7 +120,7 @@ export default function Home() {
         </div>
         <div className="relative max-w-5xl mx-auto px-6 py-28 text-center">
           <FadeIn>
-            <div className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.25em] text-[#00C9A2] mb-8 border border-[#00C9A2]/25 px-5 py-2 rounded-full bg-[#00C9A2]/5">
+            <div className="inline-flex items-center gap-2 text-xs font-black tracking-[0.25em] text-[#00C9A2] mb-8 border border-[#00C9A2]/25 px-5 py-2 rounded-full bg-[#00C9A2]/5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] animate-pulse" />
               MULTI-GROWTH ARCHITECTURE
             </div>
@@ -165,7 +162,7 @@ export default function Home() {
       <section className="py-28 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <FadeIn>
-            <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div>
+            <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div>
             <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">The "Better" Illusion</h2>
             <p className="text-gray-600 text-xl leading-relaxed mb-6">
               Most people don't fail because they are lazy. They fail because they are{' '}
@@ -177,7 +174,7 @@ export default function Home() {
                 <FadeIn key={item} delay={i * 80}>
                   <div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100 hover:border-gray-200 transition-colors">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#C84739] flex-shrink-0" />
-                    <span className="text-gray-800 font-bold text-lg">{item}</span>
+                    <span className="text-gray-800 font-bold text-xl">{item}</span>
                   </div>
                 </FadeIn>
               ))}
@@ -186,7 +183,7 @@ export default function Home() {
               It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.
             </p>
             <div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-10 py-8">
-              <p className="text-[#C84739] font-black text-2xl leading-snug">
+              <p className="text-[#C84739] font-black text-3xl leading-snug">
                 You're building a castle on a treadmill — and the timer is running out.
               </p>
             </div>
@@ -198,16 +195,16 @@ export default function Home() {
       <section className="py-28 bg-[#F4F5F8]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
-            <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">ROOT CAUSE</div>
+            <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">ROOT CAUSE</div>
             <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2>
             <p className="text-gray-600 text-xl mb-10">Self-improvement is a scam when sold as a collection of habits.</p>
             <div className="border-t-2 border-b-2 border-[#272F4F]/10 py-12 my-10">
-              <p className="text-4xl md:text-5xl font-black italic text-[#272F4F] leading-tight">
+              <p className="text-5xl md:text-6xl font-black italic text-[#272F4F] leading-tight">
                 "A pile of bricks isn't a house.<br />A pile of habits isn't a life."
               </p>
             </div>
             <div className="bg-[#272F4F] text-white rounded-2xl px-10 py-8 mb-10">
-              <p className="text-2xl font-black">If your growth isn't structural, it's decorative.</p>
+              <p className="text-3xl font-black">If your growth isn't structural, it's decorative.</p>
             </div>
             <p className="text-gray-600 text-xl leading-relaxed">
               Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about{' '}
@@ -222,9 +219,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-16">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MECHANISM</div>
-              <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">The MGA Compounding Engine</h2>
-              <p className="text-blue-200/60 text-lg max-w-2xl mx-auto">
+              <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MECHANISM</div>
+              <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">The MGA Compounding Engine</h2>
+              <p className="text-blue-200/60 text-xl max-w-2xl mx-auto">
                 This is not coaching. This is <strong className="text-white">Infrastructure.</strong> We align the three variables that determine your ceiling.
               </p>
             </div>
@@ -238,9 +235,9 @@ export default function Home() {
               <FadeIn key={p.num} delay={i * 100}>
                 <div className="h-full rounded-2xl p-8 bg-white/5 border border-white/10 relative overflow-hidden hover:bg-white/8 transition-colors group">
                   <div className="absolute top-0 left-0 w-1 h-full" style={{ background: p.color }} />
-                  <div className="text-xs font-black mb-4" style={{ color: p.color }}>{p.num}</div>
-                  <h3 className="text-white font-black text-lg mb-4 leading-tight">{p.title}</h3>
-                  <p className="text-blue-200/60 text-sm leading-relaxed">{p.desc}</p>
+                  <div className="text-sm font-black mb-4" style={{ color: p.color }}>{p.num}</div>
+                  <h3 className="text-white font-black text-xl mb-4 leading-tight">{p.title}</h3>
+                  <p className="text-blue-200/60 text-base leading-relaxed">{p.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -258,7 +255,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-16">
-              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRANSFORMATION</div>
+              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRANSFORMATION</div>
               <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">From Effort to Momentum</h2>
               <p className="text-gray-400 mt-5 text-xl">In 90 days, the feeling of work changes.</p>
             </div>
@@ -271,9 +268,9 @@ export default function Home() {
             ].map((item, i) => (
               <FadeIn key={item.title} delay={i * 100}>
                 <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 h-full">
-                  <div className="text-xs font-black text-[#C84739] tracking-widest mb-5">{item.num}</div>
+                  <div className="text-sm font-black text-[#C84739] tracking-widest mb-5">{item.num}</div>
                   <h3 className="font-black text-[#272F4F] text-3xl mb-5">{item.title}</h3>
-                  <p className="text-gray-500 text-lg leading-relaxed">{item.desc}</p>
+                  <p className="text-gray-500 text-xl leading-relaxed">{item.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -293,9 +290,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-16">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MATH</div>
-              <h2 className="text-4xl md:text-5xl font-black text-white">Real People. Real Numbers.</h2>
-              <p className="text-blue-200/50 mt-4">We don't use stock photos and invented quotes.</p>
+              <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MATH</div>
+              <h2 className="text-5xl md:text-6xl font-black text-white">Real People. Real Numbers.</h2>
+              <p className="text-blue-200/50 mt-4 text-lg">We don't use stock photos and invented quotes.</p>
             </div>
           </FadeIn>
           <div className="grid md:grid-cols-2 gap-5">
@@ -315,19 +312,19 @@ export default function Home() {
                       <div className="text-white font-black text-lg mb-2">{s.name}</div>
                       <div className="flex flex-wrap gap-2">
                         {s.stats.map((st) => (
-                          <span key={st} className="text-xs font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>
+                          <span key={st} className="text-sm font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>
                         ))}
                       </div>
                     </div>
                   </div>
-                  <p className="text-blue-200/60 text-sm leading-relaxed italic">"{s.quote}"</p>
+                  <p className="text-blue-200/60 text-base leading-relaxed italic">"{s.quote}"</p>
                 </div>
               </FadeIn>
             ))}
           </div>
           <FadeIn>
             <div className="mt-8 bg-[#C84739]/10 border border-[#C84739]/20 rounded-2xl px-8 py-5 text-center">
-              <p className="text-white font-black">These people didn't start ahead of you. Every one of them began with a clear, honest look.</p>
+              <p className="text-white font-black text-lg">These people didn't start ahead of you. Every one of them began with a clear, honest look.</p>
             </div>
           </FadeIn>
         </div>
@@ -338,28 +335,28 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-14">
-              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">FIT CHECK</div>
+              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FIT CHECK</div>
               <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Be honest with yourself.</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white border-2 border-[#00C9A2]/30 rounded-2xl p-10 hover:border-[#00C9A2]/60 transition-colors">
-                <div className="text-xs font-black tracking-widest text-[#00A380] mb-8">THIS IS FOR YOU IF</div>
+                <div className="text-sm font-black tracking-widest text-[#00A380] mb-8">THIS IS FOR YOU IF</div>
                 <div className="space-y-6">
                   {['You are already successful but feel remarkably fragile.', 'You hate hacks and want a permanent operating system.', 'You are ready to kill good opportunities to hunt great ones.'].map((item) => (
                     <div key={item} className="flex items-start gap-4">
                       <div className="w-6 h-6 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✓</div>
-                      <p className="text-gray-700 text-lg leading-relaxed">{item}</p>
+                      <p className="text-gray-700 text-xl leading-relaxed">{item}</p>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-200">
-                <div className="text-xs font-black tracking-widest text-gray-400 mb-8">DO NOT JOIN IF</div>
+                <div className="text-sm font-black tracking-widest text-gray-400 mb-8">DO NOT JOIN IF</div>
                 <div className="space-y-6">
                   {['You are a content junkie who never builds.', 'You prioritize looking busy over being effective.', 'You think more effort is the solution to a broken system.'].map((item) => (
                     <div key={item} className="flex items-start gap-4">
                       <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✕</div>
-                      <p className="text-gray-400 text-lg leading-relaxed">{item}</p>
+                      <p className="text-gray-400 text-xl leading-relaxed">{item}</p>
                     </div>
                   ))}
                 </div>
@@ -380,18 +377,18 @@ export default function Home() {
                   className="relative rounded-3xl w-full object-cover shadow-2xl" style={{ maxHeight: '550px', objectPosition: 'top' }} />
               </div>
               <div className="order-1 md:order-2">
-                <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div>
-                <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+                <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div>
+                <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-6">
                   We didn't build MGA from a theory.
                 </h2>
-                <p className="text-blue-200/70 text-lg leading-relaxed mb-5">
+                <p className="text-blue-200/70 text-xl leading-relaxed mb-5">
                   Kanth and Shaku have spent over 30 years building the exact things MGA teaches. Not as consultants. As practitioners. Their health, their income, their community — built through the same system.
                 </p>
-                <p className="text-blue-200/70 text-lg leading-relaxed mb-8">
+                <p className="text-blue-200/70 text-xl leading-relaxed mb-8">
                   They've watched people come in skeptical and leave transformed. Not because of a program. Because of a relationship with people who actually care.
                 </p>
                 <blockquote className="border-l-4 border-[#00C9A2] pl-6">
-                  <p className="text-white text-xl font-black italic leading-snug">
+                  <p className="text-white text-2xl font-black italic leading-snug">
                     "We've never gotten tired of watching that happen. We never will."
                   </p>
                 </blockquote>
@@ -406,8 +403,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-16">
-              <div className="text-[10px] font-black tracking-[0.2em] text-[#36488F] mb-4">THE PROTOCOL</div>
-              <h2 className="text-4xl md:text-5xl font-black text-[#272F4F] leading-tight">Start with clarity. Then decide.</h2>
+              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-4">THE PROTOCOL</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">Start with clarity. Then decide.</h2>
             </div>
             <div className="grid md:grid-cols-3 gap-8 mb-12 relative">
               <div className="hidden md:block absolute top-10 left-[16.5%] right-[16.5%] h-px bg-gradient-to-r from-[#36488F] via-[#7B66BC] to-[#C84739]" />
@@ -421,8 +418,8 @@ export default function Home() {
                     <div className="w-20 h-20 rounded-full flex items-center justify-center font-black text-white text-3xl mx-auto mb-6 shadow-xl relative z-10" style={{ background: step.color }}>
                       {step.num}
                     </div>
-                    <h3 className="font-black text-[#272F4F] text-xl mb-3">{step.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-3">{step.desc}</p>
+                    <h3 className="font-black text-[#272F4F] text-2xl mb-3">{step.title}</h3>
+                    <p className="text-gray-500 text-base leading-relaxed mb-3">{step.desc}</p>
                     <span className="inline-block text-xs font-black px-3 py-1 rounded-full" style={{ background: i < 2 ? '#E8F5EE' : '#FAEAE8', color: i < 2 ? '#00A380' : '#C84739' }}>
                       {step.tag}
                     </span>
@@ -431,10 +428,10 @@ export default function Home() {
               ))}
             </div>
             <div className="bg-[#EEF1FA] rounded-2xl px-8 py-6 text-center mb-12">
-              <p className="text-[#272F4F] font-black text-lg">
+              <p className="text-[#272F4F] font-black text-xl">
                 If you finish the 10 days and don't see the signal, <span className="text-[#C84739]">you don't pay.</span>
               </p>
-              <p className="text-gray-500 text-sm mt-2">We don't want satisfied customers. We want compounding assets.</p>
+              <p className="text-gray-500 text-base mt-2">We don't want satisfied customers. We want compounding assets.</p>
             </div>
             <div className="text-center">
               <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
@@ -452,8 +449,8 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-14">
-              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-5">FAQ</div>
-              <h2 className="text-4xl md:text-5xl font-black text-[#272F4F]">Common questions,<br />honest answers.</h2>
+              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FAQ</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Common questions,<br />honest answers.</h2>
             </div>
             <div className="space-y-4">
               {[
@@ -463,11 +460,11 @@ export default function Home() {
                 { q: 'What are the 10 days like?', a: 'About 30 minutes a day. Read a few pages, watch a short video, send a brief note. Two live conversations with Kanth and Shaku — that\'s where real clarity tends to happen.' },
               ].map((faq) => (
                 <details key={faq.q} className="bg-white rounded-2xl border border-gray-100 overflow-hidden group cursor-pointer">
-                  <summary className="px-8 py-6 font-black text-[#272F4F] text-xl flex items-center justify-between hover:bg-gray-50 transition-colors list-none">
+                  <summary className="px-8 py-6 font-black text-[#272F4F] text-2xl flex items-center justify-between hover:bg-gray-50 transition-colors list-none">
                     {faq.q}
                     <span className="text-[#C84739] font-black text-2xl group-open:rotate-45 transition-transform duration-300 flex-shrink-0 ml-4 leading-none">+</span>
                   </summary>
-                  <div className="px-8 pb-6 text-gray-600 leading-relaxed text-lg">{faq.a}</div>
+                  <div className="px-8 pb-6 text-gray-600 leading-relaxed text-xl">{faq.a}</div>
                 </details>
               ))}
             </div>
@@ -502,8 +499,7 @@ export default function Home() {
       <footer className="bg-[#111827] py-10">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="MyGrowth Academy" width={28} height={28} className="rounded-lg opacity-70" />
-            <span className="text-white/40 text-sm">MyGrowth.Academy</span>
+            <span className="text-white/40 text-sm font-black">MyGrowth.Academy</span>
           </div>
           <div className="flex items-center gap-6 text-white/30 text-sm">
             <span className="hover:text-white/50 cursor-pointer transition-colors">Privacy Policy</span>
