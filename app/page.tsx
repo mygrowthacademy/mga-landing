@@ -75,7 +75,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center">
-            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '40px', width: 'auto' }} />
+            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '56px', width: 'auto' }} />
           </div>
           <div className="hidden md:flex items-center gap-8">
             {['#system', '#results', '#founders'].map((href, i) => (
