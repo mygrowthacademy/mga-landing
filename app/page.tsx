@@ -25,15 +25,91 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   );
 }
 
+function EmailCapture({ dark = false, source = 'inline' }: { dark?: boolean; source?: string }) {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    try {
+      const res = await fetch('https://formspree.io/f/mqenvezd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email, source, _replyto: email }),
+      });
+      if (res.ok) { setStatus('success'); setEmail(''); }
+      else setStatus('error');
+    } catch { setStatus('error'); }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-black text-sm">✓</span>
+        </div>
+        <p className={`font-bold ${dark ? 'text-white' : 'text-[#272F4F]'}`}>
+          Got it. Kanth or Shaku will reply within 24 hours.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-3 w-full max-w-md">
+      <input
+        type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+        placeholder="your@email.com" required
+        className={`flex-1 px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all
+          ${dark
+            ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
+            : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
+      />
+      <button type="submit" disabled={status === 'loading'}
+        className="bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm whitespace-nowrap disabled:opacity-60 hover:scale-105">
+        {status === 'loading' ? '...' : 'Reach Out →'}
+      </button>
+    </form>
+  );
+}
+
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [barVisible, setBarVisible] = useState(false);
+  const [barDismissed, setBarDismissed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrolled > 0.15 && !barDismissed) setBarVisible(true);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [barDismissed]);
 
   return (
     <main style={{ fontFamily: "'DM Sans', sans-serif" }} className="bg-white text-gray-900 overflow-x-hidden">
-
-      {/* GOOGLE FONTS */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;900&display=swap');`}</style>
+
+      {/* STICKY BOTTOM BAR */}
+      {barVisible && !barDismissed && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#272F4F] border-t border-white/10 shadow-2xl">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-black text-base leading-tight">Have a question before you start?</p>
+              <p className="text-blue-200/60 text-sm">Drop your email — Kanth or Shaku replies personally within 24 hours.</p>
+            </div>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <EmailCapture dark source="sticky-bar" />
+              <button onClick={() => { setBarDismissed(true); setBarVisible(false); }}
+                className="text-white/30 hover:text-white/60 transition-colors text-xl font-light flex-shrink-0 ml-1">✕</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* POPUP */}
       {popupOpen && (
@@ -45,21 +121,14 @@ export default function Home() {
               className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors text-sm font-bold">✕</button>
             <div className="px-10 pt-9 pb-9">
               <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-4">QUICK QUESTION</div>
-              <h2 className="text-3xl font-black text-[#272F4F] leading-tight mb-4">
-                Something's not adding up… right?
-              </h2>
-              <p className="text-gray-500 text-base mb-6 leading-relaxed">
-                Take the free Money Selfie. See exactly what's working and what's quietly draining you.
-              </p>
+              <h2 className="text-3xl font-black text-[#272F4F] leading-tight mb-4">Something's not adding up… right?</h2>
+              <p className="text-gray-500 text-base mb-6 leading-relaxed">Take the free Money Selfie. See exactly what's working and what's quietly draining you.</p>
               <div className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" />
-                <span>5 minutes</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" /><span>5 minutes</span>
                 <span className="text-gray-200 mx-1">·</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" />
-                <span>12 questions</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" /><span>12 questions</span>
                 <span className="text-gray-200 mx-1">·</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" />
-                <span>Free — no credit card</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" /><span>Free — no credit card</span>
               </div>
               <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
                 className="block w-full text-center bg-[#C84739] hover:bg-[#A63A2F] text-white font-black py-4 rounded-2xl transition-all duration-200 text-base shadow-lg shadow-red-100 hover:scale-[1.01]">
@@ -90,9 +159,7 @@ export default function Home() {
           </div>
           <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)}>
             <div className="space-y-1.5">
-              <div className="w-6 h-0.5 bg-gray-600" />
-              <div className="w-6 h-0.5 bg-gray-600" />
-              <div className="w-4 h-0.5 bg-gray-600" />
+              <div className="w-6 h-0.5 bg-gray-600" /><div className="w-6 h-0.5 bg-gray-600" /><div className="w-4 h-0.5 bg-gray-600" />
             </div>
           </button>
         </div>
@@ -104,9 +171,7 @@ export default function Home() {
               </a>
             ))}
             <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-              className="block bg-[#C84739] text-white font-black px-5 py-3 rounded-xl text-center">
-              Start Your Audit →
-            </a>
+              className="block bg-[#C84739] text-white font-black px-5 py-3 rounded-xl text-center">Start Your Audit →</a>
           </div>
         )}
       </nav>
@@ -121,20 +186,16 @@ export default function Home() {
         <div className="relative max-w-5xl mx-auto px-6 py-28 text-center">
           <FadeIn>
             <div className="inline-flex items-center gap-2 text-xs font-black tracking-[0.25em] text-[#00C9A2] mb-8 border border-[#00C9A2]/25 px-5 py-2 rounded-full bg-[#00C9A2]/5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] animate-pulse" />
-              MULTI-GROWTH ARCHITECTURE
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] animate-pulse" />MULTI-GROWTH ARCHITECTURE
             </div>
           </FadeIn>
           <FadeIn delay={100}>
             <h1 className="text-6xl md:text-8xl font-black text-white leading-[1.0] mb-6 tracking-tight">
-              The Great<br />
-              <span className="text-[#C84739] relative">Cancellation.</span>
+              The Great<br /><span className="text-[#C84739]">Cancellation.</span>
             </h1>
           </FadeIn>
           <FadeIn delay={200}>
-            <p className="text-xl md:text-2xl text-blue-200/70 max-w-2xl mx-auto mb-5 leading-relaxed font-light">
-              Your life is currently a zero-sum game.
-            </p>
+            <p className="text-xl md:text-2xl text-blue-200/70 max-w-2xl mx-auto mb-5 leading-relaxed font-light">Your life is currently a zero-sum game.</p>
           </FadeIn>
           <FadeIn delay={300}>
             <div className="text-blue-200/50 text-base md:text-lg max-w-xl mx-auto mb-6 space-y-2">
@@ -144,13 +205,11 @@ export default function Home() {
             </div>
           </FadeIn>
           <FadeIn delay={400}>
-            <p className="text-white font-black text-xl md:text-2xl italic mb-12">
-              You aren't growing. You're just vibrating in place.
-            </p>
+            <p className="text-white font-black text-xl md:text-2xl italic mb-12">You aren't growing. You're just vibrating in place.</p>
           </FadeIn>
           <FadeIn delay={500}>
             <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-lg md:text-xl px-10 py-5 md:py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/40 hover:scale-105 hover:shadow-red-900/60">
+              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-lg md:text-xl px-10 py-5 md:py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/40 hover:scale-105">
               Run Your 8-Minute System Audit →
             </a>
             <p className="text-blue-300/40 text-sm mt-4">Free · Results are instant · Hard truths included</p>
@@ -164,28 +223,21 @@ export default function Home() {
           <FadeIn>
             <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div>
             <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">The "Better" Illusion</h2>
-            <p className="text-gray-600 text-xl leading-relaxed mb-6">
-              Most people don't fail because they are lazy. They fail because they are{' '}
-              <strong className="text-[#272F4F]">efficient at the wrong things.</strong>
-            </p>
+            <p className="text-gray-600 text-xl leading-relaxed mb-6">Most people don't fail because they are lazy. They fail because they are <strong className="text-[#272F4F]">efficient at the wrong things.</strong></p>
             <p className="text-gray-500 text-xl mb-6">You've fallen for the Improvement Loop:</p>
             <div className="space-y-4 mb-12">
               {['You buy the course.', 'You start the diet.', 'You wake up at 5 AM.'].map((item, i) => (
                 <FadeIn key={item} delay={i * 80}>
-                  <div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100 hover:border-gray-200 transition-colors">
+                  <div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#C84739] flex-shrink-0" />
                     <span className="text-gray-800 font-bold text-xl">{item}</span>
                   </div>
                 </FadeIn>
               ))}
             </div>
-            <p className="text-gray-600 text-xl leading-relaxed mb-10">
-              It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.
-            </p>
+            <p className="text-gray-600 text-xl leading-relaxed mb-10">It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.</p>
             <div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-10 py-8">
-              <p className="text-[#C84739] font-black text-3xl leading-snug">
-                You're building a castle on a treadmill — and the timer is running out.
-              </p>
+              <p className="text-[#C84739] font-black text-3xl leading-snug">You're building a castle on a treadmill — and the timer is running out.</p>
             </div>
           </FadeIn>
         </div>
@@ -199,17 +251,12 @@ export default function Home() {
             <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2>
             <p className="text-gray-600 text-xl mb-10">Self-improvement is a scam when sold as a collection of habits.</p>
             <div className="border-t-2 border-b-2 border-[#272F4F]/10 py-12 my-10">
-              <p className="text-5xl md:text-6xl font-black italic text-[#272F4F] leading-tight">
-                "A pile of bricks isn't a house.<br />A pile of habits isn't a life."
-              </p>
+              <p className="text-5xl md:text-6xl font-black italic text-[#272F4F] leading-tight">"A pile of bricks isn't a house.<br />A pile of habits isn't a life."</p>
             </div>
             <div className="bg-[#272F4F] text-white rounded-2xl px-10 py-8 mb-10">
               <p className="text-3xl font-black">If your growth isn't structural, it's decorative.</p>
             </div>
-            <p className="text-gray-600 text-xl leading-relaxed">
-              Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about{' '}
-              <strong className="text-[#272F4F]">Integration.</strong> When your income feeds your energy, and your energy fuels your direction, growth becomes the path of least resistance.
-            </p>
+            <p className="text-gray-600 text-xl leading-relaxed">Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about <strong className="text-[#272F4F]">Integration.</strong> When your income feeds your energy, and your energy fuels your direction, growth becomes the path of least resistance.</p>
           </FadeIn>
         </div>
       </section>
@@ -221,9 +268,7 @@ export default function Home() {
             <div className="text-center mb-16">
               <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MECHANISM</div>
               <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">The MGA Compounding Engine</h2>
-              <p className="text-blue-200/60 text-xl max-w-2xl mx-auto">
-                This is not coaching. This is <strong className="text-white">Infrastructure.</strong> We align the three variables that determine your ceiling.
-              </p>
+              <p className="text-blue-200/60 text-xl max-w-2xl mx-auto">This is not coaching. This is <strong className="text-white">Infrastructure.</strong> We align the three variables that determine your ceiling.</p>
             </div>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-5 mb-8">
@@ -233,7 +278,7 @@ export default function Home() {
               { num: '03', title: 'DECISION ARCHITECTURE', desc: 'Stop guessing. We give you a No-Go filter that kills 90% of your distractions so the remaining 10% actually moves the needle.', color: '#00C9A2' },
             ].map((p, i) => (
               <FadeIn key={p.num} delay={i * 100}>
-                <div className="h-full rounded-2xl p-8 bg-white/5 border border-white/10 relative overflow-hidden hover:bg-white/8 transition-colors group">
+                <div className="h-full rounded-2xl p-8 bg-white/5 border border-white/10 relative overflow-hidden hover:bg-white/8 transition-colors">
                   <div className="absolute top-0 left-0 w-1 h-full" style={{ background: p.color }} />
                   <div className="text-sm font-black mb-4" style={{ color: p.color }}>{p.num}</div>
                   <h3 className="text-white font-black text-xl mb-4 leading-tight">{p.title}</h3>
@@ -277,9 +322,7 @@ export default function Home() {
           </div>
           <FadeIn>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-black italic text-[#272F4F]">
-                Stop hunting for breakthroughs.<br />Start trusting the output.
-              </p>
+              <p className="text-3xl md:text-4xl font-black italic text-[#272F4F]">Stop hunting for breakthroughs.<br />Start trusting the output.</p>
             </div>
           </FadeIn>
         </div>
@@ -297,7 +340,7 @@ export default function Home() {
           </FadeIn>
           <div className="grid md:grid-cols-2 gap-5">
             {[
-              { ini: 'J', color: '#C84739', name: 'James', stats: ['$53K → $130K', '$65K → $160K investments'], quote: 'Output increased. Hours decreased. I set up one automatic transfer the day my paycheck hit — before I could touch it. That\'s it. But it was the habits around it that changed me.' },
+              { ini: 'J', color: '#C84739', name: 'James', stats: ['$53K → $130K', '$65K → $160K investments'], quote: 'Output increased. Hours decreased. I set up one automatic transfer the day my paycheck hit — before I could touch it. But it was the habits around it that changed me.' },
               { ini: 'V', color: '#36488F', name: 'Victor', stats: ['Income tripled', 'Six-figure savings', 'Energy at 40 > 25'], quote: 'Started as a machine operator. No degree. Zero savings. Wasn\'t looking for inspiration. Was looking for a system. Same city. Different foundation.' },
               { ini: 'Ja', color: '#00A380', name: 'Jason', stats: ['Six-figure debt gone', 'Income +39%', 'Six-figure savings'], quote: 'I started showing up differently in every area — not just financially. Four years after getting a real system: no debt. Income up 39%.' },
               { ini: 'G', color: '#8B6914', name: 'George', stats: ['300% asset growth', '3 years'], quote: 'Grew up hearing money doesn\'t grow on trees. Three years later: There\'s a spring in our shoes now. I walk differently at work.' },
@@ -305,15 +348,11 @@ export default function Home() {
               <FadeIn key={s.name} delay={i * 80}>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors h-full">
                   <div className="flex items-start gap-4 mb-5">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-sm flex-shrink-0" style={{ background: s.color }}>
-                      {s.ini}
-                    </div>
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-sm flex-shrink-0" style={{ background: s.color }}>{s.ini}</div>
                     <div>
                       <div className="text-white font-black text-lg mb-2">{s.name}</div>
                       <div className="flex flex-wrap gap-2">
-                        {s.stats.map((st) => (
-                          <span key={st} className="text-sm font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>
-                        ))}
+                        {s.stats.map((st) => (<span key={st} className="text-sm font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>))}
                       </div>
                     </div>
                   </div>
@@ -366,6 +405,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* EMAIL CAPTURE — INLINE SECTION */}
+      <section className="py-24 bg-[#272F4F] relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#36488F]/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#C84739]/10 rounded-full blur-3xl" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-6 text-center">
+          <FadeIn>
+            <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">GOT A QUESTION?</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Not sure if this is for you?</h2>
+            <p className="text-blue-200/60 text-xl mb-10 leading-relaxed">
+              Drop your email. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.
+            </p>
+            <div className="flex justify-center mb-6">
+              <EmailCapture dark source="inline-section" />
+            </div>
+            <p className="text-blue-300/30 text-sm">No spam. No list. Just a real reply from a real person.</p>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* FOUNDERS */}
       <section id="founders" className="py-28 bg-[#272F4F]">
         <div className="max-w-6xl mx-auto px-6">
@@ -378,19 +438,11 @@ export default function Home() {
               </div>
               <div className="order-1 md:order-2">
                 <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div>
-                <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-6">
-                  We didn't build MGA from a theory.
-                </h2>
-                <p className="text-blue-200/70 text-xl leading-relaxed mb-5">
-                  Kanth and Shaku have spent over 30 years building the exact things MGA teaches. Not as consultants. As practitioners. Their health, their income, their community — built through the same system.
-                </p>
-                <p className="text-blue-200/70 text-xl leading-relaxed mb-8">
-                  They've watched people come in skeptical and leave transformed. Not because of a program. Because of a relationship with people who actually care.
-                </p>
+                <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-6">We didn't build MGA from a theory.</h2>
+                <p className="text-blue-200/70 text-xl leading-relaxed mb-5">Kanth and Shaku have spent over 30 years building the exact things MGA teaches. Not as consultants. As practitioners. Their health, their income, their community — built through the same system.</p>
+                <p className="text-blue-200/70 text-xl leading-relaxed mb-8">They've watched people come in skeptical and leave transformed. Not because of a program. Because of a relationship with people who actually care.</p>
                 <blockquote className="border-l-4 border-[#00C9A2] pl-6">
-                  <p className="text-white text-2xl font-black italic leading-snug">
-                    "We've never gotten tired of watching that happen. We never will."
-                  </p>
+                  <p className="text-white text-2xl font-black italic leading-snug">"We've never gotten tired of watching that happen. We never will."</p>
                 </blockquote>
               </div>
             </div>
@@ -415,22 +467,16 @@ export default function Home() {
               ].map((step, i) => (
                 <FadeIn key={step.num} delay={i * 100}>
                   <div className="text-center">
-                    <div className="w-20 h-20 rounded-full flex items-center justify-center font-black text-white text-3xl mx-auto mb-6 shadow-xl relative z-10" style={{ background: step.color }}>
-                      {step.num}
-                    </div>
+                    <div className="w-20 h-20 rounded-full flex items-center justify-center font-black text-white text-3xl mx-auto mb-6 shadow-xl relative z-10" style={{ background: step.color }}>{step.num}</div>
                     <h3 className="font-black text-[#272F4F] text-2xl mb-3">{step.title}</h3>
                     <p className="text-gray-500 text-base leading-relaxed mb-3">{step.desc}</p>
-                    <span className="inline-block text-xs font-black px-3 py-1 rounded-full" style={{ background: i < 2 ? '#E8F5EE' : '#FAEAE8', color: i < 2 ? '#00A380' : '#C84739' }}>
-                      {step.tag}
-                    </span>
+                    <span className="inline-block text-xs font-black px-3 py-1 rounded-full" style={{ background: i < 2 ? '#E8F5EE' : '#FAEAE8', color: i < 2 ? '#00A380' : '#C84739' }}>{step.tag}</span>
                   </div>
                 </FadeIn>
               ))}
             </div>
             <div className="bg-[#EEF1FA] rounded-2xl px-8 py-6 text-center mb-12">
-              <p className="text-[#272F4F] font-black text-xl">
-                If you finish the 10 days and don't see the signal, <span className="text-[#C84739]">you don't pay.</span>
-              </p>
+              <p className="text-[#272F4F] font-black text-xl">If you finish the 10 days and don't see the signal, <span className="text-[#C84739]">you don't pay.</span></p>
               <p className="text-gray-500 text-base mt-2">We don't want satisfied customers. We want compounding assets.</p>
             </div>
             <div className="text-center">
@@ -455,7 +501,7 @@ export default function Home() {
             <div className="space-y-4">
               {[
                 { q: 'Is the audit free?', a: 'Yes. The 12 questions and your full Money Picture report are completely free. No credit card required.' },
-                { q: 'Why the $99?', a: 'Because free programs get treated like free programs. We also refund it completely — if you do the work, you don\'t pay anything. So the real question is: are you serious enough to put $99 down knowing you get it back?' },
+                { q: 'Why the $99?', a: 'Because free programs get treated like free programs. We also refund it completely — if you do the work, you don\'t pay anything.' },
                 { q: 'What is MGA, exactly?', a: 'A mentorship system with over 30 years of results. Real health, real income, real growth — through consistent systems and honest, sustained mentorship.' },
                 { q: 'What are the 10 days like?', a: 'About 30 minutes a day. Read a few pages, watch a short video, send a brief note. Two live conversations with Kanth and Shaku — that\'s where real clarity tends to happen.' },
               ].map((faq) => (
@@ -482,12 +528,10 @@ export default function Home() {
           <FadeIn>
             <p className="text-blue-200/50 text-xl mb-3">Stop working on yourself.</p>
             <h2 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-12">
-              Start building<br />
-              the system that<br />
-              <span className="text-[#C84739]">works for you.</span>
+              Start building<br />the system that<br /><span className="text-[#C84739]">works for you.</span>
             </h2>
             <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl md:text-2xl px-14 py-7 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/50 hover:scale-105 hover:shadow-red-900/70">
+              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl md:text-2xl px-14 py-7 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/50 hover:scale-105">
               Start Your Audit →
             </a>
             <p className="text-blue-300/30 text-sm mt-6">Free to start · 8 minutes · No credit card · Hard truths included</p>
@@ -498,18 +542,22 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="bg-[#111827] py-10">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <span className="text-white/40 text-sm font-black">MyGrowth.Academy</span>
-          </div>
-          <div className="flex items-center gap-6 text-white/30 text-sm">
-            <span className="hover:text-white/50 cursor-pointer transition-colors">Privacy Policy</span>
-            <span className="hover:text-white/50 cursor-pointer transition-colors">Terms</span>
-            <span className="hover:text-white/50 cursor-pointer transition-colors">Contact</span>
+          <span className="text-white/40 text-sm font-black">MyGrowth.Academy</span>
+          <div className="flex items-center gap-5">
+            {[
+              { label: 'FB', href: 'https://www.facebook.com/mygrowth.academy/', hover: 'hover:text-[#1877F2]' },
+              { label: 'IG', href: 'https://www.instagram.com/mygrowth.academy/', hover: 'hover:text-pink-400' },
+              { label: 'YT', href: 'https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ', hover: 'hover:text-red-400' },
+              { label: 'LI', href: 'https://www.linkedin.com/company/mygrowth-academy/', hover: 'hover:text-[#0A66C2]' },
+              { label: 'TT', href: 'https://www.tiktok.com/@mygrowth.academy', hover: 'hover:text-white' },
+              { label: 'Website', href: 'https://www.mygrowthacademy.coach/', hover: 'hover:text-[#00C9A2]' },
+            ].map(({ label, href, hover }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                className={`text-white/30 ${hover} transition-colors text-sm font-bold`}>{label}</a>
+            ))}
           </div>
           <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-            className="text-[#00C9A2] text-sm font-black hover:text-[#00A380] transition-colors">
-            Start Your Audit →
-          </a>
+            className="text-[#00C9A2] text-sm font-black hover:text-[#00A380] transition-colors">Start Your Audit →</a>
         </div>
         <div className="max-w-6xl mx-auto px-6 mt-6 pt-6 border-t border-white/5 text-center text-white/15 text-xs">
           © 2025 MyGrowth.Academy · Not financial or medical advice. Results vary. Individual outcomes depend on effort and consistency.
