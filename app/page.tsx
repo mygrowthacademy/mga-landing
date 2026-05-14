@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaTiktok } from 'react-icons/fa';
 
 const EmailCapture = ({ source, inline = false }: { source: 'sticky-bar' | 'inline-section', inline?: boolean }) => {
   const [email, setEmail] = useState('');
@@ -101,6 +100,37 @@ const EmailCapture = ({ source, inline = false }: { source: 'sticky-bar' | 'inli
   );
 };
 
+// SVG Icons as components
+const FacebookIcon = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m5.521 17.05c-1.884.695-4.318 1.215-5.521 1.215-1.203 0-3.637-.52-5.521-1.215C5.231 16.322 4.5 15.5 4.5 14V10c0-1.5.731-2.322 1.479-3.05 1.884-.695 4.318-1.215 5.521-1.215 1.203 0 3.637.52 5.521 1.215.748.728 1.479 1.55 1.479 3.05v4c0 1.5-.731 2.322-1.479 3.05"/>
+  </svg>
+);
+
+const YoutubeIcon = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+);
+
+const LinkedinIcon = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.731-2.004 1.438-.103.25-.129.599-.129.949v5.418h-3.554s.05-8.746 0-9.637h3.554v1.364c.429-.658 1.196-1.593 2.905-1.593 2.121 0 3.71 1.385 3.71 4.362v5.504zM5.337 8.855c-1.144 0-1.915-.762-1.915-1.715 0-.953.771-1.715 1.921-1.715 1.147 0 1.918.762 1.918 1.715 0 .953-.771 1.715-1.924 1.715zm1.582 11.597H3.635V9.809h3.284v10.643zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+  </svg>
+);
+
+const TiktokIcon = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M19.661 8.574c1.439 0 2.842-.606 3.877-1.688a5.568 5.568 0 001.623-3.877v-.087c0-1.439-.606-2.842-1.688-3.877A5.568 5.568 0 0019.661 0v3.087c.934 0 1.827.371 2.49 1.034s1.034 1.556 1.034 2.49-.371 1.827-1.034 2.49-1.556 1.034-2.49 1.034zm-3.877 12.362c1.439 0 2.842-.606 3.877-1.688 1.074-.996 1.688-2.345 1.688-3.877v-5.174a5.568 5.568 0 011.623 3.877c.087 2.877-2.292 5.262-5.169 5.262-1.092 0-2.099-.348-2.966-.953v3.065c.933.087 1.914.13 2.947.13zM5.173 6.84a3.282 3.282 0 100-6.564 3.282 3.282 0 000 6.564zm14.488-3.282a2.248 2.248 0 11-4.496 0 2.248 2.248 0 014.496 0zM5.173 24c1.044 0 2.025-.043 2.947-.13v-3.065a4.48 4.48 0 01-2.947.953c-2.877 0-5.256-2.385-5.169-5.262a5.568 5.568 0 011.623-3.877v5.174c0 1.532.614 2.881 1.688 3.877a5.097 5.097 0 003.858 1.33z"/>
+  </svg>
+);
+
 export default function Home() {
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [stickyDismissed, setStickyDismissed] = useState(false);
@@ -173,7 +203,7 @@ export default function Home() {
             <ul className="space-y-4 text-lg">
               <li className="flex items-start gap-3">
                 <span className="text-green-500 font-bold">✓</span>
-                <span>You're earning $75k—$300k and it feels hollow</span>
+                <span>You're earning $75k,300k and it feels hollow</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-green-500 font-bold">✓</span>
@@ -286,24 +316,24 @@ export default function Home() {
           <h3 className="text-lg font-semibold text-gray-400">MyGrowth.Academy</h3>
           
           <div className="flex gap-6 items-center">
-            <a href="https://www.facebook.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition">
-              <FaFacebook size={24} className="text-blue-600" />
+            <a href="https://www.facebook.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:opacity-80 transition">
+              <FacebookIcon />
             </a>
             
-            <a href="https://www.instagram.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition">
-              <FaInstagram size={24} className="text-pink-600" />
+            <a href="https://www.instagram.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:opacity-80 transition">
+              <InstagramIcon />
             </a>
             
-            <a href="https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition">
-              <FaYoutube size={24} className="text-red-600" />
+            <a href="https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:opacity-80 transition">
+              <YoutubeIcon />
             </a>
             
-            <a href="https://www.linkedin.com/company/mygrowth-academy/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition">
-              <FaLinkedin size={24} className="text-blue-400" />
+            <a href="https://www.linkedin.com/company/mygrowth-academy/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:opacity-80 transition">
+              <LinkedinIcon />
             </a>
             
-            <a href="https://www.tiktok.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition">
-              <FaTiktok size={24} className="text-white" />
+            <a href="https://www.tiktok.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="text-white hover:opacity-80 transition">
+              <TiktokIcon />
             </a>
             
             <a href="https://www.mygrowthacademy.coach/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg border border-gray-600 hover:border-white transition text-sm font-medium">
