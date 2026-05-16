@@ -47,11 +47,11 @@ function EmailCapture({ dark = false, source = 'inline', inline = false }: { dar
 
   if (status === 'success') {
     return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-black text-sm">✓</span>
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-black text-xs">✓</span>
         </div>
-        <p className={`font-bold ${dark ? 'text-white' : 'text-[#272F4F]'}`}>
+        <p className={`font-bold text-sm ${dark ? 'text-white' : 'text-[#272F4F]'}`}>
           Got it. Kanth or Shaku will reply within 24 hours.
         </p>
       </div>
@@ -60,25 +60,25 @@ function EmailCapture({ dark = false, source = 'inline', inline = false }: { dar
 
   if (inline) {
     return (
-      <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-3">
+      <form onSubmit={handleSubmit} className="w-full flex flex-col md:flex-row gap-2 items-end">
         <input
           type="email" value={email} onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com" required
-          className={`w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all
+          className={`flex-1 px-3 py-2.5 rounded-lg border text-sm font-medium outline-none transition-all
             ${dark
               ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
               : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
         />
-        <textarea
-          value={message} onChange={(e) => setMessage(e.target.value)}
-          placeholder="What's your question?" required
-          className={`w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all resize-none h-24
+        <input
+          type="text" value={message} onChange={(e) => setMessage(e.target.value)}
+          placeholder="Your question..." required
+          className={`flex-1 px-3 py-2.5 rounded-lg border text-sm font-medium outline-none transition-all
             ${dark
               ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
               : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
         />
         <button type="submit" disabled={status === 'loading'}
-          className="w-full bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm disabled:opacity-60 hover:scale-105">
+          className="w-full md:w-auto bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-2.5 rounded-lg transition-all text-sm disabled:opacity-60 hover:scale-105 whitespace-nowrap">
           {status === 'loading' ? '...' : 'Reach Out →'}
         </button>
       </form>
@@ -86,25 +86,25 @@ function EmailCapture({ dark = false, source = 'inline', inline = false }: { dar
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full max-w-md">
+    <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 w-full max-w-lg">
       <input
         type="email" value={email} onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com" required
-        className={`px-4 py-2 rounded-xl border text-sm font-medium outline-none transition-all
+        className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium outline-none transition-all
           ${dark
             ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
             : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
       />
-      <textarea
-        value={message} onChange={(e) => setMessage(e.target.value)}
-        placeholder="What's your question?" required
-        className={`px-4 py-2 rounded-xl border text-sm font-medium outline-none transition-all resize-none h-16
+      <input
+        type="text" value={message} onChange={(e) => setMessage(e.target.value)}
+        placeholder="Question..." required
+        className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium outline-none transition-all
           ${dark
             ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
             : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
       />
       <button type="submit" disabled={status === 'loading'}
-        className="bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm disabled:opacity-60 hover:scale-105">
+        className="bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-4 py-2 rounded-lg transition-all text-sm disabled:opacity-60 hover:scale-105 whitespace-nowrap">
         {status === 'loading' ? '...' : 'Reach Out →'}
       </button>
     </form>
@@ -133,15 +133,15 @@ export default function Home() {
       {/* STICKY BOTTOM BAR */}
       {barVisible && !barDismissed && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#272F4F] border-t border-white/10 shadow-2xl">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-white font-black text-base leading-tight">Have a question before you start?</p>
-              <p className="text-blue-200/60 text-sm">Drop your email and question — Kanth or Shaku replies personally within 24 hours.</p>
+              <p className="text-white font-black text-sm leading-tight">Have a question before you start?</p>
+              <p className="text-blue-200/60 text-xs">Drop your email and question — Kanth or Shaku replies within 24 hours.</p>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <EmailCapture dark source="sticky-bar" />
               <button onClick={() => { setBarDismissed(true); setBarVisible(false); }}
-                className="text-white/30 hover:text-white/60 transition-colors text-xl font-light flex-shrink-0 ml-1">✕</button>
+                className="text-white/30 hover:text-white/60 transition-colors text-lg font-light flex-shrink-0">✕</button>
             </div>
           </div>
         </div>
@@ -442,22 +442,22 @@ export default function Home() {
       </section>
 
       {/* EMAIL CAPTURE — INLINE SECTION */}
-      <section className="py-24 bg-[#272F4F] relative overflow-hidden">
+      <section className="py-20 bg-[#272F4F] relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#36488F]/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#C84739]/10 rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-3xl mx-auto px-6 text-center">
+        <div className="relative max-w-5xl mx-auto px-6 text-center">
           <FadeIn>
-            <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">GOT A QUESTION?</div>
-            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Not sure if this is for you?</h2>
-            <p className="text-blue-200/60 text-xl mb-10 leading-relaxed">
+            <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-3">GOT A QUESTION?</div>
+            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-3">Not sure if this is for you?</h2>
+            <p className="text-blue-200/60 text-base md:text-lg mb-6 leading-relaxed">
               Drop your email and question. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.
             </p>
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <EmailCapture dark source="inline-section" inline={true} />
             </div>
-            <p className="text-blue-300/30 text-sm">No spam. No list. Just a real reply from a real person.</p>
+            <p className="text-blue-300/30 text-xs">No spam. No list. Just a real reply from a real person.</p>
           </FadeIn>
         </div>
       </section>
