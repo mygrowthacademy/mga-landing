@@ -25,21 +25,22 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   );
 }
 
-function EmailCapture({ dark = false, source = 'inline' }: { dark?: boolean; source?: string }) {
+function EmailCapture({ dark = false, source = 'inline', inline = false }: { dark?: boolean; source?: string; inline?: boolean }) {
   const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !message) return;
     setStatus('loading');
     try {
       const res = await fetch('https://formspree.io/f/mqenvezd', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ email, source, _replyto: email }),
+        body: JSON.stringify({ email, message, source, _replyto: email }),
       });
-      if (res.ok) { setStatus('success'); setEmail(''); }
+      if (res.ok) { setStatus('success'); setEmail(''); setMessage(''); }
       else setStatus('error');
     } catch { setStatus('error'); }
   };
@@ -57,18 +58,53 @@ function EmailCapture({ dark = false, source = 'inline' }: { dark?: boolean; sou
     );
   }
 
+  if (inline) {
+    return (
+      <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-3">
+        <input
+          type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com" required
+          className={`w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all
+            ${dark
+              ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
+              : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
+        />
+        <textarea
+          value={message} onChange={(e) => setMessage(e.target.value)}
+          placeholder="What's your question?" required
+          className={`w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all resize-none h-24
+            ${dark
+              ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
+              : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
+        />
+        <button type="submit" disabled={status === 'loading'}
+          className="w-full bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm disabled:opacity-60 hover:scale-105">
+          {status === 'loading' ? '...' : 'Reach Out →'}
+        </button>
+      </form>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="flex gap-3 w-full max-w-md">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full max-w-md">
       <input
         type="email" value={email} onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com" required
-        className={`flex-1 px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all
+        className={`px-4 py-2 rounded-xl border text-sm font-medium outline-none transition-all
+          ${dark
+            ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
+            : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
+      />
+      <textarea
+        value={message} onChange={(e) => setMessage(e.target.value)}
+        placeholder="What's your question?" required
+        className={`px-4 py-2 rounded-xl border text-sm font-medium outline-none transition-all resize-none h-16
           ${dark
             ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
             : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
       />
       <button type="submit" disabled={status === 'loading'}
-        className="bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm whitespace-nowrap disabled:opacity-60 hover:scale-105">
+        className="bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm disabled:opacity-60 hover:scale-105">
         {status === 'loading' ? '...' : 'Reach Out →'}
       </button>
     </form>
@@ -100,7 +136,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <p className="text-white font-black text-base leading-tight">Have a question before you start?</p>
-              <p className="text-blue-200/60 text-sm">Drop your email — Kanth or Shaku replies personally within 24 hours.</p>
+              <p className="text-blue-200/60 text-sm">Drop your email and question — Kanth or Shaku replies personally within 24 hours.</p>
             </div>
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <EmailCapture dark source="sticky-bar" />
@@ -416,10 +452,10 @@ export default function Home() {
             <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">GOT A QUESTION?</div>
             <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Not sure if this is for you?</h2>
             <p className="text-blue-200/60 text-xl mb-10 leading-relaxed">
-              Drop your email. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.
+              Drop your email and question. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.
             </p>
             <div className="flex justify-center mb-6">
-              <EmailCapture dark source="inline-section" />
+              <EmailCapture dark source="inline-section" inline={true} />
             </div>
             <p className="text-blue-300/30 text-sm">No spam. No list. Just a real reply from a real person.</p>
           </FadeIn>
