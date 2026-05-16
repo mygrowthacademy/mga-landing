@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const EmailCapture = ({ source, inline = false }: { source: 'sticky-bar' | 'inline-section', inline?: boolean }) => {
+const EmailCapture = ({ source, inline = false }: { source: 'sticky-bar' | 'inline-section' | 'footer', inline?: boolean }) => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -312,38 +312,49 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-800 py-8 px-6 bg-gray-900">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-400">MyGrowth.Academy</h3>
-          
-          <div className="flex gap-6 items-center">
-            <a href="https://www.facebook.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:opacity-80 transition">
-              <FacebookIcon />
-            </a>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-lg font-semibold text-gray-400">MyGrowth.Academy</h3>
             
-            <a href="https://www.instagram.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:opacity-80 transition">
-              <InstagramIcon />
-            </a>
-            
-            <a href="https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:opacity-80 transition">
-              <YoutubeIcon />
-            </a>
-            
-            <a href="https://www.linkedin.com/company/mygrowth-academy/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:opacity-80 transition">
-              <LinkedinIcon />
-            </a>
-            
-            <a href="https://www.tiktok.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="text-white hover:opacity-80 transition">
-              <TiktokIcon />
-            </a>
-            
-            <a href="https://www.mygrowthacademy.coach/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg border border-gray-600 hover:border-white transition text-sm font-medium">
-              Website
-            </a>
+            <div className="flex gap-6 items-center">
+              <a href="https://www.facebook.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:opacity-80 transition">
+                <FacebookIcon />
+              </a>
+              
+              <a href="https://www.instagram.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:opacity-80 transition">
+                <InstagramIcon />
+              </a>
+              
+              <a href="https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:opacity-80 transition">
+                <YoutubeIcon />
+              </a>
+              
+              <a href="https://www.linkedin.com/company/mygrowth-academy/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:opacity-80 transition">
+                <LinkedinIcon />
+              </a>
+              
+              <a href="https://www.tiktok.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="text-white hover:opacity-80 transition">
+                <TiktokIcon />
+              </a>
+              
+              <a href="https://www.mygrowthacademy.coach/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg border border-gray-600 hover:border-white transition text-sm font-medium">
+                Website
+              </a>
+            </div>
+
+            <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg font-semibold transition-colors text-sm">
+              Start Your Audit →
+            </button>
           </div>
 
-          <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg font-semibold transition-colors text-sm">
-            Start Your Audit →
-          </button>
+          <div className="border-t border-gray-800 pt-8">
+            <div className="max-w-2xl mx-auto">
+              <h4 className="text-center font-bold text-white mb-2">Questions? We reply personally.</h4>
+              <div className="flex gap-2">
+                <EmailCapture source="footer" />
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
 
