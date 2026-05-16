@@ -1,385 +1,569 @@
 'use client';
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+const TYPEFORM_URL = 'https://8hm5qhmx5pp.typeform.com/to/S6qSbgTP';
 
-const EmailCapture = ({ source, inline = false }: { source: 'sticky-bar' | 'inline-section' | 'footer', inline?: boolean }) => {
+function useInView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+function FadeIn({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, inView } = useInView();
+  return (
+    <div ref={ref} style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-700 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function EmailCapture({ dark = false, source = 'inline' }: { dark?: boolean; source?: string }) {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    if (!email) return;
+    setStatus('loading');
     try {
-      const response = await fetch('https://formspree.io/f/mqenvezd', {
+      const res = await fetch('https://formspree.io/f/mqenvezd', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, message, source }),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email, source, _replyto: email }),
       });
-
-      if (response.ok) {
-        setSuccess(true);
-        setEmail('');
-        setMessage('');
-        setTimeout(() => setSuccess(false), 5000);
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok) { setStatus('success'); setEmail(''); }
+      else setStatus('error');
+    } catch { setStatus('error'); }
   };
 
-  if (success) {
+  if (status === 'success') {
     return (
-      <div className="text-center py-2">
-        <p className="text-sm font-medium text-green-400">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-black text-sm">✓</span>
+        </div>
+        <p className={`font-bold ${dark ? 'text-white' : 'text-[#272F4F]'}`}>
           Got it. Kanth or Shaku will reply within 24 hours.
         </p>
       </div>
     );
   }
 
-  if (inline) {
-    return (
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input
-          type="email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-        />
-        <textarea
-          placeholder="What's your question?"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-          className="w-full px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm resize-none h-24"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
-        >
-          {loading ? 'Sending...' : 'Reach Out →'}
-        </button>
-      </form>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit} className="flex gap-3 w-full max-w-md">
       <input
-        type="email"
-        placeholder="your@email.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+        type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+        placeholder="your@email.com" required
+        className={`flex-1 px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-all
+          ${dark
+            ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-[#00C9A2]'
+            : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-[#36488F]'}`}
       />
-      <textarea
-        placeholder="What's your question?"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        required
-        className="px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm resize-none h-16"
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 text-sm"
-      >
-        {loading ? 'Sending...' : 'Reach Out →'}
+      <button type="submit" disabled={status === 'loading'}
+        className="bg-[#C84739] hover:bg-[#A63A2F] text-white font-black px-5 py-3 rounded-xl transition-all text-sm whitespace-nowrap disabled:opacity-60 hover:scale-105">
+        {status === 'loading' ? '...' : 'Reach Out →'}
       </button>
     </form>
   );
-};
-
-// SVG Icons as components
-const FacebookIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-  </svg>
-);
-
-const InstagramIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m5.521 17.05c-1.884.695-4.318 1.215-5.521 1.215-1.203 0-3.637-.52-5.521-1.215C5.231 16.322 4.5 15.5 4.5 14V10c0-1.5.731-2.322 1.479-3.05 1.884-.695 4.318-1.215 5.521-1.215 1.203 0 3.637.52 5.521 1.215.748.728 1.479 1.55 1.479 3.05v4c0 1.5-.731 2.322-1.479 3.05"/>
-  </svg>
-);
-
-const YoutubeIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-  </svg>
-);
-
-const LinkedinIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.731-2.004 1.438-.103.25-.129.599-.129.949v5.418h-3.554s.05-8.746 0-9.637h3.554v1.364c.429-.658 1.196-1.593 2.905-1.593 2.121 0 3.71 1.385 3.71 4.362v5.504zM5.337 8.855c-1.144 0-1.915-.762-1.915-1.715 0-.953.771-1.715 1.921-1.715 1.147 0 1.918.762 1.918 1.715 0 .953-.771 1.715-1.924 1.715zm1.582 11.597H3.635V9.809h3.284v10.643zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-  </svg>
-);
-
-const TiktokIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M19.661 8.574c1.439 0 2.842-.606 3.877-1.688a5.568 5.568 0 001.623-3.877v-.087c0-1.439-.606-2.842-1.688-3.877A5.568 5.568 0 0019.661 0v3.087c.934 0 1.827.371 2.49 1.034s1.034 1.556 1.034 2.49-.371 1.827-1.034 2.49-1.556 1.034-2.49 1.034zm-3.877 12.362c1.439 0 2.842-.606 3.877-1.688 1.074-.996 1.688-2.345 1.688-3.877v-5.174a5.568 5.568 0 011.623 3.877c.087 2.877-2.292 5.262-5.169 5.262-1.092 0-2.099-.348-2.966-.953v3.065c.933.087 1.914.13 2.947.13zM5.173 6.84a3.282 3.282 0 100-6.564 3.282 3.282 0 000 6.564zm14.488-3.282a2.248 2.248 0 11-4.496 0 2.248 2.248 0 014.496 0zM5.173 24c1.044 0 2.025-.043 2.947-.13v-3.065a4.48 4.48 0 01-2.947.953c-2.877 0-5.256-2.385-5.169-5.262a5.568 5.568 0 011.623-3.877v5.174c0 1.532.614 2.881 1.688 3.877a5.097 5.097 0 003.858 1.33z"/>
-  </svg>
-);
+}
 
 export default function Home() {
-  const [showStickyBar, setShowStickyBar] = useState(false);
-  const [stickyDismissed, setStickyDismissed] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [barVisible, setBarVisible] = useState(false);
+  const [barDismissed, setBarDismissed] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      if (scrollPercent > 15 && !stickyDismissed) {
-        setShowStickyBar(true);
-      }
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrolled > 0.15 && !barDismissed) setBarVisible(true);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [stickyDismissed]);
+  }, [barDismissed]);
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen overflow-x-hidden">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold">
-            <span className="text-orange-500">my</span>growth<span className="text-green-500">.</span>academy
-          </div>
-          <div className="flex gap-8 items-center">
-            <Link href="#system" className="hover:text-orange-500 transition">The System</Link>
-            <Link href="#results" className="hover:text-orange-500 transition">Results</Link>
-            <Link href="#about" className="hover:text-orange-500 transition">About</Link>
-            <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg font-semibold transition-colors">
-              Start Your Audit →
-            </button>
-          </div>
-        </div>
-      </nav>
+    <main style={{ fontFamily: "'DM Sans', sans-serif" }} className="bg-white text-gray-900 overflow-x-hidden">
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;900&display=swap');`}</style>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <div className="inline-block border border-green-500 rounded-full px-4 py-2 mb-8">
-            <span className="text-green-500 text-sm font-semibold">• MULTI-GROWTH ARCHITECTURE</span>
-          </div>
-          
-          <h1 className="text-7xl font-black leading-tight mb-8">
-            The Great
-            <br />
-            <span className="text-orange-500">Cancellation.</span>
-          </h1>
-
-          <p className="text-xl text-gray-300 mb-6">Your life is currently a zero-sum game.</p>
-          
-          <div className="space-y-4 text-lg text-gray-400 mb-12">
-            <p>You work harder to earn more... but your health pays the tax.</p>
-            <p>You build discipline in the gym... but your business loses focus.</p>
-            <p>You learn new skills... but your bank account doesn't notice.</p>
-          </div>
-
-          <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-xl font-bold text-lg transition-colors">
-            Start Your Audit →
-          </button>
-
-          <p className="text-gray-500 text-sm mt-6">Free to start · 8 minutes · No credit card · Hard truths included</p>
-        </div>
-      </section>
-
-      {/* For / Not For Section */}
-      <section id="system" className="py-20 px-6 bg-gray-800 bg-opacity-50">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-          <div>
-            <h3 className="text-3xl font-bold mb-8 text-green-500">This works for you if:</h3>
-            <ul className="space-y-4 text-lg">
-              <li className="flex items-start gap-3">
-                <span className="text-green-500 font-bold">✓</span>
-                <span>You're earning $75k,300k and it feels hollow</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-green-500 font-bold">✓</span>
-                <span>Your health, wealth, and direction are in conflict</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-green-500 font-bold">✓</span>
-                <span>You want to compound instead of cancel</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-green-500 font-bold">✓</span>
-                <span>You're ready to move from hustle culture to strategy</span>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-3xl font-bold mb-8 text-orange-500">Not for you if:</h3>
-            <ul className="space-y-4 text-lg text-gray-300">
-              <li className="flex items-start gap-3">
-                <span className="text-orange-500 font-bold">✗</span>
-                <span>You want a quick fix or a shortcut</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-orange-500 font-bold">✗</span>
-                <span>You're not ready to look at the hard truths about yourself</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-orange-500 font-bold">✗</span>
-                <span>You think your problems are external (economy, luck, timing)</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-orange-500 font-bold">✗</span>
-                <span>You're content with your current trajectory</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Inline Email Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-gray-800 to-gray-900">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4">Not sure if this is for you?</h2>
-          <p className="text-gray-300 text-lg mb-8">
-            Drop your email and question. Kanth or Shaku will personally reply within 24 hours, no automation, no assistant.
-          </p>
-          <div className="bg-gray-700 bg-opacity-30 p-8 rounded-xl backdrop-blur">
-            <EmailCapture source="inline-section" inline={true} />
-          </div>
-        </div>
-      </section>
-
-      {/* Founders Section */}
-      <section id="about" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-12">Who's behind this</h2>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <div className="bg-gray-700 h-64 rounded-lg mb-6 flex items-center justify-center">
-                <span className="text-gray-500">Kanth Photo</span>
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Kanth</h3>
-              <p className="text-gray-300">30+ years of mentorship and real-world building</p>
+      {/* STICKY BOTTOM BAR */}
+      {barVisible && !barDismissed && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#272F4F] border-t border-white/10 shadow-2xl">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-black text-base leading-tight">Have a question before you start?</p>
+              <p className="text-blue-200/60 text-sm">Drop your email — Kanth or Shaku replies personally within 24 hours.</p>
             </div>
-            <div>
-              <div className="bg-gray-700 h-64 rounded-lg mb-6 flex items-center justify-center">
-                <span className="text-gray-500">Shaku Photo</span>
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Shaku</h3>
-              <p className="text-gray-300">Founder mindset, investor perspective, personal results</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Results Section */}
-      <section id="results" className="py-20 px-6 bg-gray-800 bg-opacity-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold mb-12 text-center">What students report</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { number: '300%', label: 'Average income increase in year 1' },
-              { number: '8hrs/week', label: 'Freed up through systems thinking' },
-              { number: '92%', label: 'Report clearer direction within 90 days' },
-            ].map((stat, i) => (
-              <div key={i} className="text-center p-6">
-                <p className="text-5xl font-black text-orange-500 mb-2">{stat.number}</p>
-                <p className="text-gray-300">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-6 text-center">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-4xl font-bold mb-6">Works for you.</h2>
-          <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-xl font-bold text-lg transition-colors mb-6">
-            Start Your Audit →
-          </button>
-          <p className="text-gray-500 text-sm">Free to start · 8 minutes · No credit card · Hard truths included</p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800 py-8 px-6 bg-gray-900">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-lg font-semibold text-gray-400">MyGrowth.Academy</h3>
-            
-            <div className="flex gap-6 items-center">
-              <a href="https://www.facebook.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:opacity-80 transition">
-                <FacebookIcon />
-              </a>
-              
-              <a href="https://www.instagram.com/mygrowth.academy/" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:opacity-80 transition">
-                <InstagramIcon />
-              </a>
-              
-              <a href="https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:opacity-80 transition">
-                <YoutubeIcon />
-              </a>
-              
-              <a href="https://www.linkedin.com/company/mygrowth-academy/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:opacity-80 transition">
-                <LinkedinIcon />
-              </a>
-              
-              <a href="https://www.tiktok.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="text-white hover:opacity-80 transition">
-                <TiktokIcon />
-              </a>
-              
-              <a href="https://www.mygrowthacademy.coach/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg border border-gray-600 hover:border-white transition text-sm font-medium">
-                Website
-              </a>
-            </div>
-
-            <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg font-semibold transition-colors text-sm">
-              Start Your Audit →
-            </button>
-          </div>
-
-          <div className="border-t border-gray-800 pt-8">
-            <div className="max-w-2xl mx-auto">
-              <h4 className="text-center font-bold text-white mb-2">Questions? We reply personally.</h4>
-              <div className="flex gap-2">
-                <EmailCapture source="footer" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Sticky Bottom Bar */}
-      {showStickyBar && !stickyDismissed && (
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-4 z-40">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div>
-              <h4 className="font-bold text-white">Have a question before you start?</h4>
-              <p className="text-gray-400 text-sm">Drop your email and question, Kanth or Shaku replies personally within 24 hours.</p>
-            </div>
-            <div className="flex gap-2 items-center flex-shrink-0">
-              <div className="w-80">
-                <EmailCapture source="sticky-bar" />
-              </div>
-              <button
-                onClick={() => setStickyDismissed(true)}
-                className="text-gray-400 hover:text-white transition p-2"
-              >
-                ✕
-              </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <EmailCapture dark source="sticky-bar" />
+              <button onClick={() => { setBarDismissed(true); setBarVisible(false); }}
+                className="text-white/30 hover:text-white/60 transition-colors text-xl font-light flex-shrink-0 ml-1">✕</button>
             </div>
           </div>
         </div>
       )}
-    </div>
+
+      {/* POPUP */}
+      {popupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(15,20,40,0.55)' }}>
+          <div className="absolute inset-0" onClick={() => setPopupOpen(false)} />
+          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-1.5 bg-gradient-to-r from-[#C84739] via-[#36488F] to-[#00C9A2]" />
+            <button onClick={() => setPopupOpen(false)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors text-sm font-bold">✕</button>
+            <div className="px-10 pt-9 pb-9">
+              <div className="text-[10px] font-black tracking-[0.2em] text-[#00C9A2] mb-4">QUICK QUESTION</div>
+              <h2 className="text-3xl font-black text-[#272F4F] leading-tight mb-4">Something's not adding up… right?</h2>
+              <p className="text-gray-500 text-base mb-6 leading-relaxed">Take the free Money Selfie. See exactly what's working and what's quietly draining you.</p>
+              <div className="flex items-center gap-2 text-sm text-gray-400 mb-8">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" /><span>5 minutes</span>
+                <span className="text-gray-200 mx-1">·</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" /><span>12 questions</span>
+                <span className="text-gray-200 mx-1">·</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] flex-shrink-0" /><span>Free — no credit card</span>
+              </div>
+              <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+                className="block w-full text-center bg-[#C84739] hover:bg-[#A63A2F] text-white font-black py-4 rounded-2xl transition-all duration-200 text-base shadow-lg shadow-red-100 hover:scale-[1.01]">
+                Show Me What's Going On →
+              </a>
+              <p className="text-center text-xs text-gray-400 mt-4">No sales call · Instant results</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* NAV */}
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center">
+            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '66px', width: 'auto' }} />
+          </div>
+          <div className="hidden md:flex items-center gap-8">
+            {['#system', '#results', '#founders'].map((href, i) => (
+              <a key={href} href={href} className="text-sm text-gray-500 hover:text-[#272F4F] font-medium transition-colors">
+                {['The System', 'Results', 'About'][i]}
+              </a>
+            ))}
+            <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+              className="bg-[#C84739] hover:bg-[#A63A2F] text-white text-sm font-black px-5 py-2.5 rounded-xl transition-all hover:scale-105 shadow-sm">
+              Start Your Audit →
+            </a>
+          </div>
+          <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)}>
+            <div className="space-y-1.5">
+              <div className="w-6 h-0.5 bg-gray-600" /><div className="w-6 h-0.5 bg-gray-600" /><div className="w-4 h-0.5 bg-gray-600" />
+            </div>
+          </button>
+        </div>
+        {menuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 px-6 py-5 space-y-4">
+            {['#system', '#results', '#founders'].map((href, i) => (
+              <a key={href} href={href} className="block text-gray-600 font-medium" onClick={() => setMenuOpen(false)}>
+                {['The System', 'Results', 'About'][i]}
+              </a>
+            ))}
+            <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+              className="block bg-[#C84739] text-white font-black px-5 py-3 rounded-xl text-center">Start Your Audit →</a>
+          </div>
+        )}
+      </nav>
+
+      {/* HERO */}
+      <section className="min-h-screen bg-[#272F4F] flex items-center relative overflow-hidden pt-16">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 -left-20 w-[500px] h-[500px] rounded-full bg-[#36488F]/25 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-[#C84739]/15 blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#00C9A2]/5 blur-3xl" />
+        </div>
+        <div className="relative max-w-5xl mx-auto px-6 py-28 text-center">
+          <FadeIn>
+            <div className="inline-flex items-center gap-2 text-xs font-black tracking-[0.25em] text-[#00C9A2] mb-8 border border-[#00C9A2]/25 px-5 py-2 rounded-full bg-[#00C9A2]/5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] animate-pulse" />MULTI-GROWTH ARCHITECTURE
+            </div>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <h1 className="text-6xl md:text-8xl font-black text-white leading-[1.0] mb-6 tracking-tight">
+              The Great<br /><span className="text-[#C84739]">Cancellation.</span>
+            </h1>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <p className="text-xl md:text-2xl text-blue-200/70 max-w-2xl mx-auto mb-5 leading-relaxed font-light">Your life is currently a zero-sum game.</p>
+          </FadeIn>
+          <FadeIn delay={300}>
+            <div className="text-blue-200/50 text-base md:text-lg max-w-xl mx-auto mb-6 space-y-2">
+              <p>You work harder to earn more... but your health pays the tax.</p>
+              <p>You build discipline in the gym... but your business loses focus.</p>
+              <p>You learn new skills... but your bank account doesn't notice.</p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={400}>
+            <p className="text-white font-black text-xl md:text-2xl italic mb-12">You aren't growing. You're just vibrating in place.</p>
+          </FadeIn>
+          <FadeIn delay={500}>
+            <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-lg md:text-xl px-10 py-5 md:py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/40 hover:scale-105">
+              Run Your 8-Minute System Audit →
+            </a>
+            <p className="text-blue-300/40 text-sm mt-4">Free · Results are instant · Hard truths included</p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* THE TRAP */}
+      <section className="py-28 bg-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div>
+            <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">The "Better" Illusion</h2>
+            <p className="text-gray-600 text-xl leading-relaxed mb-6">Most people don't fail because they are lazy. They fail because they are <strong className="text-[#272F4F]">efficient at the wrong things.</strong></p>
+            <p className="text-gray-500 text-xl mb-6">You've fallen for the Improvement Loop:</p>
+            <div className="space-y-4 mb-12">
+              {['You buy the course.', 'You start the diet.', 'You wake up at 5 AM.'].map((item, i) => (
+                <FadeIn key={item} delay={i * 80}>
+                  <div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#C84739] flex-shrink-0" />
+                    <span className="text-gray-800 font-bold text-xl">{item}</span>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+            <p className="text-gray-600 text-xl leading-relaxed mb-10">It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.</p>
+            <div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-10 py-8">
+              <p className="text-[#C84739] font-black text-3xl leading-snug">You're building a castle on a treadmill — and the timer is running out.</p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ROOT CAUSE */}
+      <section className="py-28 bg-[#F4F5F8]">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <FadeIn>
+            <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">ROOT CAUSE</div>
+            <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2>
+            <p className="text-gray-600 text-xl mb-10">Self-improvement is a scam when sold as a collection of habits.</p>
+            <div className="border-t-2 border-b-2 border-[#272F4F]/10 py-12 my-10">
+              <p className="text-5xl md:text-6xl font-black italic text-[#272F4F] leading-tight">"A pile of bricks isn't a house.<br />A pile of habits isn't a life."</p>
+            </div>
+            <div className="bg-[#272F4F] text-white rounded-2xl px-10 py-8 mb-10">
+              <p className="text-3xl font-black">If your growth isn't structural, it's decorative.</p>
+            </div>
+            <p className="text-gray-600 text-xl leading-relaxed">Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about <strong className="text-[#272F4F]">Integration.</strong> When your income feeds your energy, and your energy fuels your direction, growth becomes the path of least resistance.</p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* MECHANISM */}
+      <section id="system" className="py-28 bg-[#272F4F]">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MECHANISM</div>
+              <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">The MGA Compounding Engine</h2>
+              <p className="text-blue-200/60 text-xl max-w-2xl mx-auto">This is not coaching. This is <strong className="text-white">Infrastructure.</strong> We align the three variables that determine your ceiling.</p>
+            </div>
+          </FadeIn>
+          <div className="grid md:grid-cols-3 gap-5 mb-8">
+            {[
+              { num: '01', title: 'ASYMMETRIC INCOME', desc: 'Stop trading time. We install high-leverage skill pathways designed for maximum output with minimum friction.', color: '#C84739' },
+              { num: '02', title: 'BIOLOGICAL LONGEVITY', desc: 'Stop burning out. We treat your physiology as a high-performance energy plant, not a vanity project.', color: '#36488F' },
+              { num: '03', title: 'DECISION ARCHITECTURE', desc: 'Stop guessing. We give you a No-Go filter that kills 90% of your distractions so the remaining 10% actually moves the needle.', color: '#00C9A2' },
+            ].map((p, i) => (
+              <FadeIn key={p.num} delay={i * 100}>
+                <div className="h-full rounded-2xl p-8 bg-white/5 border border-white/10 relative overflow-hidden hover:bg-white/8 transition-colors">
+                  <div className="absolute top-0 left-0 w-1 h-full" style={{ background: p.color }} />
+                  <div className="text-sm font-black mb-4" style={{ color: p.color }}>{p.num}</div>
+                  <h3 className="text-white font-black text-xl mb-4 leading-tight">{p.title}</h3>
+                  <p className="text-blue-200/60 text-base leading-relaxed">{p.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn>
+            <div className="bg-gradient-to-r from-[#C84739]/10 via-white/5 to-[#00C9A2]/10 border border-white/10 rounded-2xl px-8 py-6 text-center">
+              <p className="text-white font-black text-xl">MGA doesn't add more to your plate. <span className="text-[#00C9A2]">It replaces the plate.</span></p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* TRANSFORMATION */}
+      <section className="py-28 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRANSFORMATION</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">From Effort to Momentum</h2>
+              <p className="text-gray-400 mt-5 text-xl">In 90 days, the feeling of work changes.</p>
+            </div>
+          </FadeIn>
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+            {[
+              { title: 'The Fog Clears', desc: 'You stop asking "What should I do?" and start executing the obvious.', num: '01' },
+              { title: 'The Floor Rises', desc: 'Your bad days become more productive than your old good days.', num: '02' },
+              { title: 'The Baseline Stacks', desc: 'Your income and health finally start trending in the same direction.', num: '03' },
+            ].map((item, i) => (
+              <FadeIn key={item.title} delay={i * 100}>
+                <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 h-full">
+                  <div className="text-sm font-black text-[#C84739] tracking-widest mb-5">{item.num}</div>
+                  <h3 className="font-black text-[#272F4F] text-3xl mb-5">{item.title}</h3>
+                  <p className="text-gray-500 text-xl leading-relaxed">{item.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-black italic text-[#272F4F]">Stop hunting for breakthroughs.<br />Start trusting the output.</p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* RESULTS */}
+      <section id="results" className="py-28 bg-[#272F4F]">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MATH</div>
+              <h2 className="text-5xl md:text-6xl font-black text-white">Real People. Real Numbers.</h2>
+              <p className="text-blue-200/50 mt-4 text-lg">We don't use stock photos and invented quotes.</p>
+            </div>
+          </FadeIn>
+          <div className="grid md:grid-cols-2 gap-5">
+            {[
+              { ini: 'J', color: '#C84739', name: 'James', stats: ['$53K → $130K', '$65K → $160K investments'], quote: 'Output increased. Hours decreased. I set up one automatic transfer the day my paycheck hit — before I could touch it. But it was the habits around it that changed me.' },
+              { ini: 'V', color: '#36488F', name: 'Victor', stats: ['Income tripled', 'Six-figure savings', 'Energy at 40 > 25'], quote: 'Started as a machine operator. No degree. Zero savings. Wasn\'t looking for inspiration. Was looking for a system. Same city. Different foundation.' },
+              { ini: 'Ja', color: '#00A380', name: 'Jason', stats: ['Six-figure debt gone', 'Income +39%', 'Six-figure savings'], quote: 'I started showing up differently in every area — not just financially. Four years after getting a real system: no debt. Income up 39%.' },
+              { ini: 'G', color: '#8B6914', name: 'George', stats: ['300% asset growth', '3 years'], quote: 'Grew up hearing money doesn\'t grow on trees. Three years later: There\'s a spring in our shoes now. I walk differently at work.' },
+            ].map((s, i) => (
+              <FadeIn key={s.name} delay={i * 80}>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors h-full">
+                  <div className="flex items-start gap-4 mb-5">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-sm flex-shrink-0" style={{ background: s.color }}>{s.ini}</div>
+                    <div>
+                      <div className="text-white font-black text-lg mb-2">{s.name}</div>
+                      <div className="flex flex-wrap gap-2">
+                        {s.stats.map((st) => (<span key={st} className="text-sm font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-blue-200/60 text-base leading-relaxed italic">"{s.quote}"</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn>
+            <div className="mt-8 bg-[#C84739]/10 border border-[#C84739]/20 rounded-2xl px-8 py-5 text-center">
+              <p className="text-white font-black text-lg">These people didn't start ahead of you. Every one of them began with a clear, honest look.</p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* FOR / NOT FOR */}
+      <section className="py-28 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-center mb-14">
+              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FIT CHECK</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Be honest with yourself.</h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white border-2 border-[#00C9A2]/30 rounded-2xl p-10 hover:border-[#00C9A2]/60 transition-colors">
+                <div className="text-sm font-black tracking-widest text-[#00A380] mb-8">THIS IS FOR YOU IF</div>
+                <div className="space-y-6">
+                  {['You are already successful but feel remarkably fragile.', 'You hate hacks and want a permanent operating system.', 'You are ready to kill good opportunities to hunt great ones.'].map((item) => (
+                    <div key={item} className="flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✓</div>
+                      <p className="text-gray-700 text-xl leading-relaxed">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-200">
+                <div className="text-sm font-black tracking-widest text-gray-400 mb-8">DO NOT JOIN IF</div>
+                <div className="space-y-6">
+                  {['You are a content junkie who never builds.', 'You prioritize looking busy over being effective.', 'You think more effort is the solution to a broken system.'].map((item) => (
+                    <div key={item} className="flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✕</div>
+                      <p className="text-gray-400 text-xl leading-relaxed">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* EMAIL CAPTURE — INLINE SECTION */}
+      <section className="py-24 bg-[#272F4F] relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#36488F]/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#C84739]/10 rounded-full blur-3xl" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-6 text-center">
+          <FadeIn>
+            <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">GOT A QUESTION?</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Not sure if this is for you?</h2>
+            <p className="text-blue-200/60 text-xl mb-10 leading-relaxed">
+              Drop your email. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.
+            </p>
+            <div className="flex justify-center mb-6">
+              <EmailCapture dark source="inline-section" />
+            </div>
+            <p className="text-blue-300/30 text-sm">No spam. No list. Just a real reply from a real person.</p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* FOUNDERS */}
+      <section id="founders" className="py-28 bg-[#272F4F]">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div className="relative order-2 md:order-1">
+                <div className="absolute -inset-6 bg-gradient-to-br from-[#C84739]/20 to-[#36488F]/20 rounded-3xl blur-2xl" />
+                <Image src="/founders.png" alt="Kanth and Shaku" width={600} height={750}
+                  className="relative rounded-3xl w-full object-cover shadow-2xl" style={{ maxHeight: '550px', objectPosition: 'top' }} />
+              </div>
+              <div className="order-1 md:order-2">
+                <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div>
+                <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-6">We didn't build MGA from a theory.</h2>
+                <p className="text-blue-200/70 text-xl leading-relaxed mb-5">Kanth and Shaku have spent over 30 years building the exact things MGA teaches. Not as consultants. As practitioners. Their health, their income, their community — built through the same system.</p>
+                <p className="text-blue-200/70 text-xl leading-relaxed mb-8">They've watched people come in skeptical and leave transformed. Not because of a program. Because of a relationship with people who actually care.</p>
+                <blockquote className="border-l-4 border-[#00C9A2] pl-6">
+                  <p className="text-white text-2xl font-black italic leading-snug">"We've never gotten tired of watching that happen. We never will."</p>
+                </blockquote>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* PROTOCOL */}
+      <section className="py-28 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-4">THE PROTOCOL</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">Start with clarity. Then decide.</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8 mb-12 relative">
+              <div className="hidden md:block absolute top-10 left-[16.5%] right-[16.5%] h-px bg-gradient-to-r from-[#36488F] via-[#7B66BC] to-[#C84739]" />
+              {[
+                { num: '1', title: 'The Audit', desc: '8 minutes to find the leak.', color: '#36488F', tag: 'Free' },
+                { num: '2', title: 'The Blueprint', desc: 'A customized map of your misalignments.', color: '#36488F', tag: 'Free' },
+                { num: '3', title: 'The 10-Day Installation', desc: 'We build the system together. $99 — fully refunded if you do the work.', color: '#C84739', tag: '$99 refundable' },
+              ].map((step, i) => (
+                <FadeIn key={step.num} delay={i * 100}>
+                  <div className="text-center">
+                    <div className="w-20 h-20 rounded-full flex items-center justify-center font-black text-white text-3xl mx-auto mb-6 shadow-xl relative z-10" style={{ background: step.color }}>{step.num}</div>
+                    <h3 className="font-black text-[#272F4F] text-2xl mb-3">{step.title}</h3>
+                    <p className="text-gray-500 text-base leading-relaxed mb-3">{step.desc}</p>
+                    <span className="inline-block text-xs font-black px-3 py-1 rounded-full" style={{ background: i < 2 ? '#E8F5EE' : '#FAEAE8', color: i < 2 ? '#00A380' : '#C84739' }}>{step.tag}</span>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+            <div className="bg-[#EEF1FA] rounded-2xl px-8 py-6 text-center mb-12">
+              <p className="text-[#272F4F] font-black text-xl">If you finish the 10 days and don't see the signal, <span className="text-[#C84739]">you don't pay.</span></p>
+              <p className="text-gray-500 text-base mt-2">We don't want satisfied customers. We want compounding assets.</p>
+            </div>
+            <div className="text-center">
+              <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+                className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl px-12 py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-100 hover:shadow-red-200 hover:scale-105">
+                Start Your Audit →
+              </a>
+              <p className="text-gray-400 text-sm mt-4">Free to start · 8 minutes · No credit card</p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-24 bg-[#F4F5F8]">
+        <div className="max-w-3xl mx-auto px-6">
+          <FadeIn>
+            <div className="text-center mb-14">
+              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FAQ</div>
+              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Common questions,<br />honest answers.</h2>
+            </div>
+            <div className="space-y-4">
+              {[
+                { q: 'Is the audit free?', a: 'Yes. The 12 questions and your full Money Picture report are completely free. No credit card required.' },
+                { q: 'Why the $99?', a: 'Because free programs get treated like free programs. We also refund it completely — if you do the work, you don\'t pay anything.' },
+                { q: 'What is MGA, exactly?', a: 'A mentorship system with over 30 years of results. Real health, real income, real growth — through consistent systems and honest, sustained mentorship.' },
+                { q: 'What are the 10 days like?', a: 'About 30 minutes a day. Read a few pages, watch a short video, send a brief note. Two live conversations with Kanth and Shaku — that\'s where real clarity tends to happen.' },
+              ].map((faq) => (
+                <details key={faq.q} className="bg-white rounded-2xl border border-gray-100 overflow-hidden group cursor-pointer">
+                  <summary className="px-8 py-6 font-black text-[#272F4F] text-2xl flex items-center justify-between hover:bg-gray-50 transition-colors list-none">
+                    {faq.q}
+                    <span className="text-[#C84739] font-black text-2xl group-open:rotate-45 transition-transform duration-300 flex-shrink-0 ml-4 leading-none">+</span>
+                  </summary>
+                  <div className="px-8 pb-6 text-gray-600 leading-relaxed text-xl">{faq.a}</div>
+                </details>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="py-36 bg-[#272F4F] relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C84739]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#36488F]/20 rounded-full blur-3xl" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-6 text-center">
+          <FadeIn>
+            <p className="text-blue-200/50 text-xl mb-3">Stop working on yourself.</p>
+            <h2 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-12">
+              Start building<br />the system that<br /><span className="text-[#C84739]">works for you.</span>
+            </h2>
+            <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl md:text-2xl px-14 py-7 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/50 hover:scale-105">
+              Start Your Audit →
+            </a>
+            <p className="text-blue-300/30 text-sm mt-6">Free to start · 8 minutes · No credit card · Hard truths included</p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#111827] py-10">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <span className="text-white/40 text-sm font-black">MyGrowth.Academy</span>
+          <div className="flex items-center gap-5">
+            {[
+              { label: 'FB', href: 'https://www.facebook.com/mygrowth.academy/', hover: 'hover:text-[#1877F2]' },
+              { label: 'IG', href: 'https://www.instagram.com/mygrowth.academy/', hover: 'hover:text-pink-400' },
+              { label: 'YT', href: 'https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ', hover: 'hover:text-red-400' },
+              { label: 'LI', href: 'https://www.linkedin.com/company/mygrowth-academy/', hover: 'hover:text-[#0A66C2]' },
+              { label: 'TT', href: 'https://www.tiktok.com/@mygrowth.academy', hover: 'hover:text-white' },
+              { label: 'Website', href: 'https://www.mygrowthacademy.coach/', hover: 'hover:text-[#00C9A2]' },
+            ].map(({ label, href, hover }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                className={`text-white/30 ${hover} transition-colors text-sm font-bold`}>{label}</a>
+            ))}
+          </div>
+          <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+            className="text-[#00C9A2] text-sm font-black hover:text-[#00A380] transition-colors">Start Your Audit →</a>
+        </div>
+        <div className="max-w-6xl mx-auto px-6 mt-6 pt-6 border-t border-white/5 text-center text-white/15 text-xs">
+          © 2025 MyGrowth.Academy · Not financial or medical advice. Results vary. Individual outcomes depend on effort and consistency.
+        </div>
+      </footer>
+
+    </main>
   );
 }
