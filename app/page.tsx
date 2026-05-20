@@ -117,19 +117,52 @@ export default function Home() {
   const [barVisible, setBarVisible] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
 
-  // EXIT-INTENT POPUP TRIGGER
+  // LAYERED POPUP TRIGGERS: Exit-Intent + Scroll-Depth + Time Delay
   useEffect(() => {
     let hasShownPopup = false;
 
+    // Trigger 1: Exit-Intent (mouse to top of page)
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !hasShownPopup) {
         setPopupOpen(true);
         hasShownPopup = true;
+        document.removeEventListener('mouseleave', handleMouseLeave);
+        document.removeEventListener('scroll', handleScroll);
+        clearTimeout(timeoutId);
       }
     };
 
+    // Trigger 2: Scroll-Depth (40-60% down page)
+    const handleScroll = () => {
+      if (hasShownPopup) return;
+      const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      if (scrollPercentage >= 40 && scrollPercentage <= 60) {
+        setPopupOpen(true);
+        hasShownPopup = true;
+        document.removeEventListener('mouseleave', handleMouseLeave);
+        document.removeEventListener('scroll', handleScroll);
+        clearTimeout(timeoutId);
+      }
+    };
+
+    // Trigger 3: Time-Based (22 seconds)
+    const timeoutId = setTimeout(() => {
+      if (!hasShownPopup) {
+        setPopupOpen(true);
+        hasShownPopup = true;
+        document.removeEventListener('mouseleave', handleMouseLeave);
+        document.removeEventListener('scroll', handleScroll);
+      }
+    }, 22000);
+
     document.addEventListener('mouseleave', handleMouseLeave);
-    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('scroll', handleScroll);
+
+    return () => {
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   useEffect(() => {
