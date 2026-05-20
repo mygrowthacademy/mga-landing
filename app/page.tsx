@@ -112,10 +112,25 @@ function EmailCapture({ dark = false, source = 'inline', inline = false }: { dar
 }
 
 export default function Home() {
-  const [popupOpen, setPopupOpen] = useState(true);
+  const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [barVisible, setBarVisible] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
+
+  // EXIT-INTENT POPUP TRIGGER
+  useEffect(() => {
+    let hasShownPopup = false;
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !hasShownPopup) {
+        setPopupOpen(true);
+        hasShownPopup = true;
+      }
+    };
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
