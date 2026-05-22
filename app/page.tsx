@@ -117,11 +117,9 @@ export default function Home() {
   const [barVisible, setBarVisible] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
 
-  // LAYERED POPUP TRIGGERS: Exit-Intent + Scroll-Depth + Time Delay
   useEffect(() => {
     let hasShownPopup = false;
 
-    // Trigger 1: Exit-Intent (mouse to top of page)
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !hasShownPopup) {
         setPopupOpen(true);
@@ -132,7 +130,6 @@ export default function Home() {
       }
     };
 
-    // Trigger 2: Scroll-Depth (40-60% down page)
     const handleScroll = () => {
       if (hasShownPopup) return;
       const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
@@ -145,7 +142,6 @@ export default function Home() {
       }
     };
 
-    // Trigger 3: Time-Based (22 seconds)
     const timeoutId = setTimeout(() => {
       if (!hasShownPopup) {
         setPopupOpen(true);
@@ -178,9 +174,17 @@ export default function Home() {
     <main style={{ fontFamily: "'DM Sans', sans-serif" }} className="bg-white text-gray-900 overflow-x-hidden">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;900&display=swap');`}</style>
 
+      {/* STICKY MOBILE CTA - P02 FIX */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#C84739] border-t border-[#A63A2F] shadow-2xl">
+        <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
+          className="block w-full px-4 py-3 text-center text-white font-black text-sm hover:bg-[#A63A2F] transition-all">
+          Start Your Audit Now →
+        </a>
+      </div>
+
       {/* STICKY BOTTOM BAR */}
       {barVisible && !barDismissed && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#272F4F] border-t border-white/10 shadow-2xl">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#272F4F] border-t border-white/10 shadow-2xl md:bottom-auto md:top-auto">
           <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-white font-black text-sm leading-tight">Have a question before you start?</p>
@@ -228,7 +232,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center">
-            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '66px', width: 'auto' }} />
+            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '66px', width: 'auto' }} priority />
           </div>
           <div className="hidden md:flex items-center gap-8">
             {['#system', '#results', '#founders'].map((href, i) => (
@@ -260,8 +264,8 @@ export default function Home() {
         )}
       </nav>
 
-      {/* HERO */}
-      <section className="min-h-screen bg-[#272F4F] flex items-center relative overflow-hidden pt-16">
+      {/* HERO - P25 FIX: Optimized for load time */}
+      <section className="min-h-screen bg-[#272F4F] flex items-center relative overflow-hidden pt-16 pb-24 md:pb-16">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-20 -left-20 w-[500px] h-[500px] rounded-full bg-[#36488F]/25 blur-3xl" />
           <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-[#C84739]/15 blur-3xl" />
@@ -296,7 +300,7 @@ export default function Home() {
               className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-lg md:text-xl px-10 py-5 md:py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/40 hover:scale-105">
               Run Your 8-Minute System Audit →
             </a>
-            <p className="text-blue-300/40 text-sm mt-4">Free · Results are instant · Hard truths included</p>
+            <p className="text-blue-300/40 text-sm mt-4">Free · Results are instant · Limited spots available</p>
           </FadeIn>
         </div>
       </section>
@@ -518,7 +522,7 @@ export default function Home() {
               <div className="relative order-2 md:order-1">
                 <div className="absolute -inset-6 bg-gradient-to-br from-[#C84739]/20 to-[#36488F]/20 rounded-3xl blur-2xl" />
                 <Image src="/founders.png" alt="Kanth and Shaku" width={600} height={750}
-                  className="relative rounded-3xl w-full object-cover shadow-2xl" style={{ maxHeight: '550px', objectPosition: 'top' }} />
+                  className="relative rounded-3xl w-full object-cover shadow-2xl" style={{ maxHeight: '550px', objectPosition: 'top' }} loading="lazy" />
               </div>
               <div className="order-1 md:order-2">
                 <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div>
@@ -568,7 +572,7 @@ export default function Home() {
                 className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl px-12 py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-100 hover:shadow-red-200 hover:scale-105">
                 Start Your Audit →
               </a>
-              <p className="text-gray-400 text-sm mt-4">Free to start · 8 minutes · No credit card</p>
+              <p className="text-gray-400 text-sm mt-4">Free to start · 8 minutes · Limited spots available</p>
             </div>
           </FadeIn>
         </div>
@@ -618,7 +622,7 @@ export default function Home() {
               className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl md:text-2xl px-14 py-7 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/50 hover:scale-105">
               Start Your Audit →
             </a>
-            <p className="text-blue-300/30 text-sm mt-6">Free to start · 8 minutes · No credit card · Hard truths included</p>
+            <p className="text-blue-300/30 text-sm mt-6">Free to start · 8 minutes · Limited spots available</p>
           </FadeIn>
         </div>
       </section>
