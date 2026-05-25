@@ -8,7 +8,7 @@ function useInView() {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.1 });
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setInView(true); obs.unobserve(e.target); } }, { threshold: 0.1 });
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
@@ -228,7 +228,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center">
-            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '66px', width: 'auto' }} />
+            <Image src="/logo-full.png" alt="MyGrowth Academy" width={180} height={48} className="object-contain" style={{ height: '66px', width: 'auto' }} priority quality={80} />
           </div>
           <div className="hidden md:flex items-center gap-8">
             {['#system', '#results', '#founders'].map((href, i) => (
@@ -301,353 +301,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* THE TRAP */}
-      <section className="py-28 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div>
-            <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">The "Better" Illusion</h2>
-            <p className="text-gray-600 text-xl leading-relaxed mb-6">Most people don't fail because they are lazy. They fail because they are <strong className="text-[#272F4F]">efficient at the wrong things.</strong></p>
-            <p className="text-gray-500 text-xl mb-6">You've fallen for the Improvement Loop:</p>
-            <div className="space-y-4 mb-12">
-              {['You buy the course.', 'You start the diet.', 'You wake up at 5 AM.'].map((item, i) => (
-                <FadeIn key={item} delay={i * 80}>
-                  <div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#C84739] flex-shrink-0" />
-                    <span className="text-gray-800 font-bold text-xl">{item}</span>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-            <p className="text-gray-600 text-xl leading-relaxed mb-10">It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.</p>
-            <div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-10 py-8">
-              <p className="text-[#C84739] font-black text-3xl leading-snug">You're building a castle on a treadmill — and the timer is running out.</p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      {/* THE TRAP - REST OF PAGE IDENTICAL */}
+      <section className="py-28 bg-white"><div className="max-w-4xl mx-auto px-6"><FadeIn><div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRAP</div><h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">The "Better" Illusion</h2><p className="text-gray-600 text-xl leading-relaxed mb-6">Most people don't fail because they are lazy. They fail because they are <strong className="text-[#272F4F]">efficient at the wrong things.</strong></p><p className="text-gray-500 text-xl mb-6">You've fallen for the Improvement Loop:</p><div className="space-y-4 mb-12">{['You buy the course.', 'You start the diet.', 'You wake up at 5 AM.'].map((item, i) => (<FadeIn key={item} delay={i * 80}><div className="flex items-center gap-5 bg-gray-50 rounded-2xl px-8 py-5 border border-gray-100"><div className="w-2.5 h-2.5 rounded-full bg-[#C84739] flex-shrink-0" /><span className="text-gray-800 font-bold text-xl">{item}</span></div></FadeIn>))}</div><p className="text-gray-600 text-xl leading-relaxed mb-10">It feels like progress, but it's actually <strong className="text-[#272F4F]">Entropy.</strong> Because your habits aren't connected, they have no shelf life. The moment you stop pushing, the progress evaporates.</p><div className="bg-[#FAEAE8] border-l-4 border-[#C84739] rounded-2xl px-10 py-8"><p className="text-[#C84739] font-black text-3xl leading-snug">You're building a castle on a treadmill — and the timer is running out.</p></div></FadeIn></div></section>
 
-      {/* ROOT CAUSE */}
-      <section className="py-28 bg-[#F4F5F8]">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <FadeIn>
-            <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">ROOT CAUSE</div>
-            <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2>
-            <p className="text-gray-600 text-xl mb-10">Self-improvement is a scam when sold as a collection of habits.</p>
-            <div className="border-t-2 border-b-2 border-[#272F4F]/10 py-12 my-10">
-              <p className="text-5xl md:text-6xl font-black italic text-[#272F4F] leading-tight">"A pile of bricks isn't a house.<br />A pile of habits isn't a life."</p>
-            </div>
-            <div className="bg-[#272F4F] text-white rounded-2xl px-10 py-8 mb-10">
-              <p className="text-3xl font-black">If your growth isn't structural, it's decorative.</p>
-            </div>
-            <p className="text-gray-600 text-xl leading-relaxed">Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about <strong className="text-[#272F4F]">Integration.</strong> When your income feeds your energy, and your energy fuels your direction, growth becomes the path of least resistance.</p>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-28 bg-[#F4F5F8]"><div className="max-w-4xl mx-auto px-6 text-center"><FadeIn><div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">ROOT CAUSE</div><h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight mb-10">Growth Without Architecture</h2><p className="text-gray-600 text-xl mb-10">Self-improvement is a scam when sold as a collection of habits.</p><div className="border-t-2 border-b-2 border-[#272F4F]/10 py-12 my-10"><p className="text-5xl md:text-6xl font-black italic text-[#272F4F] leading-tight">"A pile of bricks isn't a house.<br />A pile of habits isn't a life."</p></div><div className="bg-[#272F4F] text-white rounded-2xl px-10 py-8 mb-10"><p className="text-3xl font-black">If your growth isn't structural, it's decorative.</p></div><p className="text-gray-600 text-xl leading-relaxed">Most people try to <em>balance</em> their lives. Balance is for the mediocre. MGA is about <strong className="text-[#272F4F]">Integration.</strong> When your income feeds your energy, and your energy fuels your direction, growth becomes the path of least resistance.</p></FadeIn></div></section>
 
-      {/* MECHANISM */}
-      <section id="system" className="py-28 bg-[#272F4F]">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-center mb-16">
-              <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MECHANISM</div>
-              <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">The MGA Compounding Engine</h2>
-              <p className="text-blue-200/60 text-xl max-w-2xl mx-auto">This is not coaching. This is <strong className="text-white">Infrastructure.</strong> We align the three variables that determine your ceiling.</p>
-            </div>
-          </FadeIn>
-          <div className="grid md:grid-cols-3 gap-5 mb-8">
-            {[
-              { num: '01', title: 'ASYMMETRIC INCOME', desc: 'Stop trading time. We install high-leverage skill pathways designed for maximum output with minimum friction.', color: '#C84739' },
-              { num: '02', title: 'BIOLOGICAL LONGEVITY', desc: 'Stop burning out. We treat your physiology as a high-performance energy plant, not a vanity project.', color: '#36488F' },
-              { num: '03', title: 'DECISION ARCHITECTURE', desc: 'Stop guessing. We give you a No-Go filter that kills 90% of your distractions so the remaining 10% actually moves the needle.', color: '#00C9A2' },
-            ].map((p, i) => (
-              <FadeIn key={p.num} delay={i * 100}>
-                <div className="h-full rounded-2xl p-8 bg-white/5 border border-white/10 relative overflow-hidden hover:bg-white/8 transition-colors">
-                  <div className="absolute top-0 left-0 w-1 h-full" style={{ background: p.color }} />
-                  <div className="text-sm font-black mb-4" style={{ color: p.color }}>{p.num}</div>
-                  <h3 className="text-white font-black text-xl mb-4 leading-tight">{p.title}</h3>
-                  <p className="text-blue-200/60 text-base leading-relaxed">{p.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-          <FadeIn>
-            <div className="bg-gradient-to-r from-[#C84739]/10 via-white/5 to-[#00C9A2]/10 border border-white/10 rounded-2xl px-8 py-6 text-center">
-              <p className="text-white font-black text-xl">MGA doesn't add more to your plate. <span className="text-[#00C9A2]">It replaces the plate.</span></p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section id="system" className="py-28 bg-[#272F4F]"><div className="max-w-6xl mx-auto px-6"><FadeIn><div className="text-center mb-16"><div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MECHANISM</div><h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">The MGA Compounding Engine</h2><p className="text-blue-200/60 text-xl max-w-2xl mx-auto">This is not coaching. This is <strong className="text-white">Infrastructure.</strong> We align the three variables that determine your ceiling.</p></div></FadeIn><div className="grid md:grid-cols-3 gap-5 mb-8">{[{ num: '01', title: 'ASYMMETRIC INCOME', desc: 'Stop trading time. We install high-leverage skill pathways designed for maximum output with minimum friction.', color: '#C84739' }, { num: '02', title: 'BIOLOGICAL LONGEVITY', desc: 'Stop burning out. We treat your physiology as a high-performance energy plant, not a vanity project.', color: '#36488F' }, { num: '03', title: 'DECISION ARCHITECTURE', desc: 'Stop guessing. We give you a No-Go filter that kills 90% of your distractions so the remaining 10% actually moves the needle.', color: '#00C9A2' }].map((p, i) => (<FadeIn key={p.num} delay={i * 100}><div className="h-full rounded-2xl p-8 bg-white/5 border border-white/10 relative overflow-hidden hover:bg-white/8 transition-colors"><div className="absolute top-0 left-0 w-1 h-full" style={{ background: p.color }} /><div className="text-sm font-black mb-4" style={{ color: p.color }}>{p.num}</div><h3 className="text-white font-black text-xl mb-4 leading-tight">{p.title}</h3><p className="text-blue-200/60 text-base leading-relaxed">{p.desc}</p></div></FadeIn>))}</div><FadeIn><div className="bg-gradient-to-r from-[#C84739]/10 via-white/5 to-[#00C9A2]/10 border border-white/10 rounded-2xl px-8 py-6 text-center"><p className="text-white font-black text-xl">MGA doesn't add more to your plate. <span className="text-[#00C9A2]">It replaces the plate.</span></p></div></FadeIn></div></section>
 
-      {/* TRANSFORMATION */}
-      <section className="py-28 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-center mb-16">
-              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRANSFORMATION</div>
-              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">From Effort to Momentum</h2>
-              <p className="text-gray-400 mt-5 text-xl">In 90 days, the feeling of work changes.</p>
-            </div>
-          </FadeIn>
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
-            {[
-              { title: 'The Fog Clears', desc: 'You stop asking "What should I do?" and start executing the obvious.', num: '01' },
-              { title: 'The Floor Rises', desc: 'Your bad days become more productive than your old good days.', num: '02' },
-              { title: 'The Baseline Stacks', desc: 'Your income and health finally start trending in the same direction.', num: '03' },
-            ].map((item, i) => (
-              <FadeIn key={item.title} delay={i * 100}>
-                <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 h-full">
-                  <div className="text-sm font-black text-[#C84739] tracking-widest mb-5">{item.num}</div>
-                  <h3 className="font-black text-[#272F4F] text-3xl mb-5">{item.title}</h3>
-                  <p className="text-gray-500 text-xl leading-relaxed">{item.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-          <FadeIn>
-            <div className="text-center">
-              <p className="text-3xl md:text-4xl font-black italic text-[#272F4F]">Stop hunting for breakthroughs.<br />Start trusting the output.</p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-28 bg-white"><div className="max-w-6xl mx-auto px-6"><FadeIn><div className="text-center mb-16"><div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">THE TRANSFORMATION</div><h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">From Effort to Momentum</h2><p className="text-gray-400 mt-5 text-xl">In 90 days, the feeling of work changes.</p></div></FadeIn><div className="grid md:grid-cols-3 gap-6 mb-16">{[{ title: 'The Fog Clears', desc: 'You stop asking "What should I do?" and start executing the obvious.', num: '01' }, { title: 'The Floor Rises', desc: 'Your bad days become more productive than your old good days.', num: '02' }, { title: 'The Baseline Stacks', desc: 'Your income and health finally start trending in the same direction.', num: '03' }].map((item, i) => (<FadeIn key={item.title} delay={i * 100}><div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 h-full"><div className="text-sm font-black text-[#C84739] tracking-widest mb-5">{item.num}</div><h3 className="font-black text-[#272F4F] text-3xl mb-5">{item.title}</h3><p className="text-gray-500 text-xl leading-relaxed">{item.desc}</p></div></FadeIn>))}</div><FadeIn><div className="text-center"><p className="text-3xl md:text-4xl font-black italic text-[#272F4F]">Stop hunting for breakthroughs.<br />Start trusting the output.</p></div></FadeIn></div></section>
 
-      {/* RESULTS */}
-      <section id="results" className="py-28 bg-[#272F4F]">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-center mb-16">
-              <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MATH</div>
-              <h2 className="text-5xl md:text-6xl font-black text-white">Real People. Real Numbers.</h2>
-              <p className="text-blue-200/50 mt-4 text-lg">We don't use stock photos and invented quotes.</p>
-            </div>
-          </FadeIn>
-          <div className="grid md:grid-cols-2 gap-5">
-            {[
-              { ini: 'J', color: '#C84739', name: 'James', stats: ['$53K → $130K', '$65K → $160K investments'], quote: 'Output increased. Hours decreased. I set up one automatic transfer the day my paycheck hit — before I could touch it. But it was the habits around it that changed me.' },
-              { ini: 'V', color: '#36488F', name: 'Victor', stats: ['Income tripled', 'Six-figure savings', 'Energy at 40 > 25'], quote: 'Started as a machine operator. No degree. Zero savings. Wasn\'t looking for inspiration. Was looking for a system. Same city. Different foundation.' },
-              { ini: 'Ja', color: '#00A380', name: 'Jason', stats: ['Six-figure debt gone', 'Income +39%', 'Six-figure savings'], quote: 'I started showing up differently in every area — not just financially. Four years after getting a real system: no debt. Income up 39%.' },
-              { ini: 'G', color: '#8B6914', name: 'George', stats: ['300% asset growth', '3 years'], quote: 'Grew up hearing money doesn\'t grow on trees. Three years later: There\'s a spring in our shoes now. I walk differently at work.' },
-            ].map((s, i) => (
-              <FadeIn key={s.name} delay={i * 80}>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors h-full">
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-sm flex-shrink-0" style={{ background: s.color }}>{s.ini}</div>
-                    <div>
-                      <div className="text-white font-black text-lg mb-2">{s.name}</div>
-                      <div className="flex flex-wrap gap-2">
-                        {s.stats.map((st) => (<span key={st} className="text-sm font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-blue-200/60 text-base leading-relaxed italic">"{s.quote}"</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-          <FadeIn>
-            <div className="mt-8 bg-[#C84739]/10 border border-[#C84739]/20 rounded-2xl px-8 py-5 text-center">
-              <p className="text-white font-black text-lg">These people didn't start ahead of you. Every one of them began with a clear, honest look.</p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section id="results" className="py-28 bg-[#272F4F]"><div className="max-w-6xl mx-auto px-6"><FadeIn><div className="text-center mb-16"><div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">THE MATH</div><h2 className="text-5xl md:text-6xl font-black text-white">Real People. Real Numbers.</h2><p className="text-blue-200/50 mt-4 text-lg">We don't use stock photos and invented quotes.</p></div></FadeIn><div className="grid md:grid-cols-2 gap-5">{[{ ini: 'J', color: '#C84739', name: 'James', stats: ['$53K → $130K', '$65K → $160K investments'], quote: 'Output increased. Hours decreased. I set up one automatic transfer the day my paycheck hit — before I could touch it. But it was the habits around it that changed me.' }, { ini: 'V', color: '#36488F', name: 'Victor', stats: ['Income tripled', 'Six-figure savings', 'Energy at 40 > 25'], quote: 'Started as a machine operator. No degree. Zero savings. Wasn\'t looking for inspiration. Was looking for a system. Same city. Different foundation.' }, { ini: 'Ja', color: '#00A380', name: 'Jason', stats: ['Six-figure debt gone', 'Income +39%', 'Six-figure savings'], quote: 'I started showing up differently in every area — not just financially. Four years after getting a real system: no debt. Income up 39%.' }, { ini: 'G', color: '#8B6914', name: 'George', stats: ['300% asset growth', '3 years'], quote: 'Grew up hearing money doesn\'t grow on trees. Three years later: There\'s a spring in our shoes now. I walk differently at work.' }].map((s, i) => (<FadeIn key={s.name} delay={i * 80}><div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors h-full"><div className="flex items-start gap-4 mb-5"><div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-sm flex-shrink-0" style={{ background: s.color }}>{s.ini}</div><div><div className="text-white font-black text-lg mb-2">{s.name}</div><div className="flex flex-wrap gap-2">{s.stats.map((st) => (<span key={st} className="text-sm font-bold px-3 py-1 rounded-full bg-white/10 text-blue-200">{st}</span>))}</div></div></div><p className="text-blue-200/60 text-base leading-relaxed italic">"{s.quote}"</p></div></FadeIn>))}</div><FadeIn><div className="mt-8 bg-[#C84739]/10 border border-[#C84739]/20 rounded-2xl px-8 py-5 text-center"><p className="text-white font-black text-lg">These people didn't start ahead of you. Every one of them began with a clear, honest look.</p></div></FadeIn></div></section>
 
-      {/* FOR / NOT FOR */}
-      <section className="py-28 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-center mb-14">
-              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FIT CHECK</div>
-              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Be honest with yourself.</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white border-2 border-[#00C9A2]/30 rounded-2xl p-10 hover:border-[#00C9A2]/60 transition-colors">
-                <div className="text-sm font-black tracking-widest text-[#00A380] mb-8">THIS IS FOR YOU IF</div>
-                <div className="space-y-6">
-                  {['You are already successful but feel remarkably fragile.', 'You hate hacks and want a permanent operating system.', 'You are ready to kill good opportunities to hunt great ones.'].map((item) => (
-                    <div key={item} className="flex items-start gap-4">
-                      <div className="w-6 h-6 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✓</div>
-                      <p className="text-gray-700 text-xl leading-relaxed">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-200">
-                <div className="text-sm font-black tracking-widest text-gray-400 mb-8">DO NOT JOIN IF</div>
-                <div className="space-y-6">
-                  {['You are a content junkie who never builds.', 'You prioritize looking busy over being effective.', 'You think more effort is the solution to a broken system.'].map((item) => (
-                    <div key={item} className="flex items-start gap-4">
-                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✕</div>
-                      <p className="text-gray-400 text-xl leading-relaxed">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-28 bg-white"><div className="max-w-6xl mx-auto px-6"><FadeIn><div className="text-center mb-14"><div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FIT CHECK</div><h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Be honest with yourself.</h2></div><div className="grid md:grid-cols-2 gap-8"><div className="bg-white border-2 border-[#00C9A2]/30 rounded-2xl p-10 hover:border-[#00C9A2]/60 transition-colors"><div className="text-sm font-black tracking-widest text-[#00A380] mb-8">THIS IS FOR YOU IF</div><div className="space-y-6">{['You are already successful but feel remarkably fragile.', 'You hate hacks and want a permanent operating system.', 'You are ready to kill good opportunities to hunt great ones.'].map((item) => (<div key={item} className="flex items-start gap-4"><div className="w-6 h-6 rounded-full bg-[#00C9A2] flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✓</div><p className="text-gray-700 text-xl leading-relaxed">{item}</p></div>))}</div></div><div className="bg-[#F4F5F8] rounded-2xl p-10 border border-gray-200"><div className="text-sm font-black tracking-widest text-gray-400 mb-8">DO NOT JOIN IF</div><div className="space-y-6">{['You are a content junkie who never builds.', 'You prioritize looking busy over being effective.', 'You think more effort is the solution to a broken system.'].map((item) => (<div key={item} className="flex items-start gap-4"><div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-sm font-black">✕</div><p className="text-gray-400 text-xl leading-relaxed">{item}</p></div>))}</div></div></div></FadeIn></div></section>
 
-      {/* EMAIL CAPTURE — INLINE SECTION */}
-      <section className="py-20 bg-[#272F4F] relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#36488F]/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#C84739]/10 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-5xl mx-auto px-6 text-center">
-          <FadeIn>
-            <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-3">GOT A QUESTION?</div>
-            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-3">Not sure if this is for you?</h2>
-            <p className="text-blue-200/60 text-base md:text-lg mb-6 leading-relaxed">
-              Drop your email and question. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.
-            </p>
-            <div className="flex justify-center mb-4">
-              <EmailCapture dark source="inline-section" inline={true} />
-            </div>
-            <p className="text-blue-300/30 text-xs">No spam. No list. Just a real reply from a real person.</p>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-20 bg-[#272F4F] relative overflow-hidden"><div className="absolute inset-0 pointer-events-none"><div className="absolute top-0 right-0 w-96 h-96 bg-[#36488F]/20 rounded-full blur-3xl" /><div className="absolute bottom-0 left-0 w-64 h-64 bg-[#C84739]/10 rounded-full blur-3xl" /></div><div className="relative max-w-5xl mx-auto px-6 text-center"><FadeIn><div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-3">GOT A QUESTION?</div><h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-3">Not sure if this is for you?</h2><p className="text-blue-200/60 text-base md:text-lg mb-6 leading-relaxed">Drop your email and question. Kanth or Shaku will personally reply within 24 hours — no automation, no assistant.</p><div className="flex justify-center mb-4"><EmailCapture dark source="inline-section" inline={true} /></div><p className="text-blue-300/30 text-xs">No spam. No list. Just a real reply from a real person.</p></FadeIn></div></section>
 
-      {/* FOUNDERS */}
-      <section id="founders" className="py-28 bg-[#272F4F]">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div className="relative order-2 md:order-1">
-                <div className="absolute -inset-6 bg-gradient-to-br from-[#C84739]/20 to-[#36488F]/20 rounded-3xl blur-2xl" />
-                <Image src="/founders.png" alt="Kanth and Shaku" width={600} height={750}
-                  className="relative rounded-3xl w-full object-cover shadow-2xl" style={{ maxHeight: '550px', objectPosition: 'top' }} />
-              </div>
-              <div className="order-1 md:order-2">
-                <div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div>
-                <h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-6">We didn't build MGA from a theory.</h2>
-                <p className="text-blue-200/70 text-xl leading-relaxed mb-5">Kanth and Shaku have spent over 30 years building the exact things MGA teaches. Not as consultants. As practitioners. Their health, their income, their community — built through the same system.</p>
-                <p className="text-blue-200/70 text-xl leading-relaxed mb-8">They've watched people come in skeptical and leave transformed. Not because of a program. Because of a relationship with people who actually care.</p>
-                <blockquote className="border-l-4 border-[#00C9A2] pl-6">
-                  <p className="text-white text-2xl font-black italic leading-snug">"We've never gotten tired of watching that happen. We never will."</p>
-                </blockquote>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section id="founders" className="py-28 bg-[#272F4F]"><div className="max-w-6xl mx-auto px-6"><FadeIn><div className="grid md:grid-cols-2 gap-16 items-center"><div className="relative order-2 md:order-1"><div className="absolute -inset-6 bg-gradient-to-br from-[#C84739]/20 to-[#36488F]/20 rounded-3xl blur-2xl" /><Image src="/founders.png" alt="Kanth and Shaku" width={600} height={750} className="relative rounded-3xl w-full object-cover shadow-2xl" style={{ maxHeight: '550px', objectPosition: 'top' }} loading="lazy" quality={75} /></div><div className="order-1 md:order-2"><div className="text-xs font-black tracking-[0.2em] text-[#00C9A2] mb-4">OUR STORY</div><h2 className="text-5xl md:text-6xl font-black text-white leading-tight mb-6">We didn't build MGA from a theory.</h2><p className="text-blue-200/70 text-xl leading-relaxed mb-5">Kanth and Shaku have spent over 30 years building the exact things MGA teaches. Not as consultants. As practitioners. Their health, their income, their community — built through the same system.</p><p className="text-blue-200/70 text-xl leading-relaxed mb-8">They've watched people come in skeptical and leave transformed. Not because of a program. Because of a relationship with people who actually care.</p><blockquote className="border-l-4 border-[#00C9A2] pl-6"><p className="text-white text-2xl font-black italic leading-snug">"We've never gotten tired of watching that happen. We never will."</p></blockquote></div></div></FadeIn></div></section>
 
-      {/* PROTOCOL */}
-      <section className="py-28 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-center mb-16">
-              <div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-4">THE PROTOCOL</div>
-              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">Start with clarity. Then decide.</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8 mb-12 relative">
-              <div className="hidden md:block absolute top-10 left-[16.5%] right-[16.5%] h-px bg-gradient-to-r from-[#36488F] via-[#7B66BC] to-[#C84739]" />
-              {[
-                { num: '1', title: 'The Audit', desc: '8 minutes to find the leak.', color: '#36488F', tag: 'Free' },
-                { num: '2', title: 'The Blueprint', desc: 'A customized map of your misalignments.', color: '#36488F', tag: 'Free' },
-                { num: '3', title: 'The 10-Day Installation', desc: 'We build the system together. $99 — fully refunded if you do the work.', color: '#C84739', tag: '$99 refundable' },
-              ].map((step, i) => (
-                <FadeIn key={step.num} delay={i * 100}>
-                  <div className="text-center">
-                    <div className="w-20 h-20 rounded-full flex items-center justify-center font-black text-white text-3xl mx-auto mb-6 shadow-xl relative z-10" style={{ background: step.color }}>{step.num}</div>
-                    <h3 className="font-black text-[#272F4F] text-2xl mb-3">{step.title}</h3>
-                    <p className="text-gray-500 text-base leading-relaxed mb-3">{step.desc}</p>
-                    <span className="inline-block text-xs font-black px-3 py-1 rounded-full" style={{ background: i < 2 ? '#E8F5EE' : '#FAEAE8', color: i < 2 ? '#00A380' : '#C84739' }}>{step.tag}</span>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-            <div className="bg-[#EEF1FA] rounded-2xl px-8 py-6 text-center mb-12">
-              <p className="text-[#272F4F] font-black text-xl">If you finish the 10 days and don't see the signal, <span className="text-[#C84739]">you don't pay.</span></p>
-              <p className="text-gray-500 text-base mt-2">We don't want satisfied customers. We want compounding assets.</p>
-            </div>
-            <div className="text-center">
-              <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-                className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl px-12 py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-100 hover:shadow-red-200 hover:scale-105">
-                Start Your Audit →
-              </a>
-              <p className="text-gray-400 text-sm mt-4">Free to start · 8 minutes · No credit card</p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-28 bg-white"><div className="max-w-6xl mx-auto px-6"><FadeIn><div className="text-center mb-16"><div className="text-xs font-black tracking-[0.2em] text-[#36488F] mb-4">THE PROTOCOL</div><h2 className="text-5xl md:text-6xl font-black text-[#272F4F] leading-tight">Start with clarity. Then decide.</h2></div><div className="grid md:grid-cols-3 gap-8 mb-12 relative"><div className="hidden md:block absolute top-10 left-[16.5%] right-[16.5%] h-px bg-gradient-to-r from-[#36488F] via-[#7B66BC] to-[#C84739]" />{[{ num: '1', title: 'The Audit', desc: '8 minutes to find the leak.', color: '#36488F', tag: 'Free' }, { num: '2', title: 'The Blueprint', desc: 'A customized map of your misalignments.', color: '#36488F', tag: 'Free' }, { num: '3', title: 'The 10-Day Installation', desc: 'We build the system together. $99 — fully refunded if you do the work.', color: '#C84739', tag: '$99 refundable' }].map((step, i) => (<FadeIn key={step.num} delay={i * 100}><div className="text-center"><div className="w-20 h-20 rounded-full flex items-center justify-center font-black text-white text-3xl mx-auto mb-6 shadow-xl relative z-10" style={{ background: step.color }}>{step.num}</div><h3 className="font-black text-[#272F4F] text-2xl mb-3">{step.title}</h3><p className="text-gray-500 text-base leading-relaxed mb-3">{step.desc}</p><span className="inline-block text-xs font-black px-3 py-1 rounded-full" style={{ background: i < 2 ? '#E8F5EE' : '#FAEAE8', color: i < 2 ? '#00A380' : '#C84739' }}>{step.tag}</span></div></FadeIn>))}</div><div className="bg-[#EEF1FA] rounded-2xl px-8 py-6 text-center mb-12"><p className="text-[#272F4F] font-black text-xl">If you finish the 10 days and don't see the signal, <span className="text-[#C84739]">you don't pay.</span></p><p className="text-gray-500 text-base mt-2">We don't want satisfied customers. We want compounding assets.</p></div><div className="text-center"><a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl px-12 py-6 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-100 hover:shadow-red-200 hover:scale-105">Start Your Audit →</a><p className="text-gray-400 text-sm mt-4">Free to start · 8 minutes · No credit card</p></div></FadeIn></div></section>
 
-      {/* FAQ */}
-      <section className="py-24 bg-[#F4F5F8]">
-        <div className="max-w-3xl mx-auto px-6">
-          <FadeIn>
-            <div className="text-center mb-14">
-              <div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FAQ</div>
-              <h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Common questions,<br />honest answers.</h2>
-            </div>
-            <div className="space-y-4">
-              {[
-                { q: 'Is the audit free?', a: 'Yes. The 12 questions and your full Money Picture report are completely free. No credit card required.' },
-                { q: 'Why the $99?', a: 'Because free programs get treated like free programs. We also refund it completely — if you do the work, you don\'t pay anything.' },
-                { q: 'What is MGA, exactly?', a: 'A mentorship system with over 30 years of results. Real health, real income, real growth — through consistent systems and honest, sustained mentorship.' },
-                { q: 'What are the 10 days like?', a: 'About 30 minutes a day. Read a few pages, watch a short video, send a brief note. Two live conversations with Kanth and Shaku — that\'s where real clarity tends to happen.' },
-              ].map((faq) => (
-                <details key={faq.q} className="bg-white rounded-2xl border border-gray-100 overflow-hidden group cursor-pointer">
-                  <summary className="px-8 py-6 font-black text-[#272F4F] text-2xl flex items-center justify-between hover:bg-gray-50 transition-colors list-none">
-                    {faq.q}
-                    <span className="text-[#C84739] font-black text-2xl group-open:rotate-45 transition-transform duration-300 flex-shrink-0 ml-4 leading-none">+</span>
-                  </summary>
-                  <div className="px-8 pb-6 text-gray-600 leading-relaxed text-xl">{faq.a}</div>
-                </details>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-24 bg-[#F4F5F8]"><div className="max-w-3xl mx-auto px-6"><FadeIn><div className="text-center mb-14"><div className="text-sm font-black tracking-[0.2em] text-[#36488F] mb-5">FAQ</div><h2 className="text-5xl md:text-6xl font-black text-[#272F4F]">Common questions,<br />honest answers.</h2></div><div className="space-y-4">{[{ q: 'Is the audit free?', a: 'Yes. The 12 questions and your full Money Picture report are completely free. No credit card required.' }, { q: 'Why the $99?', a: 'Because free programs get treated like free programs. We also refund it completely — if you do the work, you don\'t pay anything.' }, { q: 'What is MGA, exactly?', a: 'A mentorship system with over 30 years of results. Real health, real income, real growth — through consistent systems and honest, sustained mentorship.' }, { q: 'What are the 10 days like?', a: 'About 30 minutes a day. Read a few pages, watch a short video, send a brief note. Two live conversations with Kanth and Shaku — that\'s where real clarity tends to happen.' }].map((faq) => (<details key={faq.q} className="bg-white rounded-2xl border border-gray-100 overflow-hidden group cursor-pointer"><summary className="px-8 py-6 font-black text-[#272F4F] text-2xl flex items-center justify-between hover:bg-gray-50 transition-colors list-none">{faq.q}<span className="text-[#C84739] font-black text-2xl group-open:rotate-45 transition-transform duration-300 flex-shrink-0 ml-4 leading-none">+</span></summary><div className="px-8 pb-6 text-gray-600 leading-relaxed text-xl">{faq.a}</div></details>))}</div></FadeIn></div></section>
 
-      {/* FINAL CTA */}
-      <section className="py-36 bg-[#272F4F] relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C84739]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#36488F]/20 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-3xl mx-auto px-6 text-center">
-          <FadeIn>
-            <p className="text-blue-200/50 text-xl mb-3">Stop working on yourself.</p>
-            <h2 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-12">
-              Start building<br />the system that<br /><span className="text-[#C84739]">works for you.</span>
-            </h2>
-            <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-              className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl md:text-2xl px-14 py-7 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/50 hover:scale-105">
-              Start Your Audit →
-            </a>
-            <p className="text-blue-300/30 text-sm mt-6">Free to start · 8 minutes · No credit card · Hard truths included</p>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="py-36 bg-[#272F4F] relative overflow-hidden"><div className="absolute inset-0 pointer-events-none"><div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C84739]/10 rounded-full blur-3xl" /><div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#36488F]/20 rounded-full blur-3xl" /></div><div className="relative max-w-3xl mx-auto px-6 text-center"><FadeIn><p className="text-blue-200/50 text-xl mb-3">Stop working on yourself.</p><h2 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-12">Start building<br />the system that<br /><span className="text-[#C84739]">works for you.</span></h2><a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#C84739] hover:bg-[#A63A2F] text-white font-black text-xl md:text-2xl px-14 py-7 rounded-2xl transition-all duration-200 shadow-2xl shadow-red-900/50 hover:scale-105">Start Your Audit →</a><p className="text-blue-300/30 text-sm mt-6">Free to start · 8 minutes · No credit card · Hard truths included</p></FadeIn></div></section>
 
-      {/* FOOTER */}
-      <footer className="bg-[#111827] py-10">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <span className="text-white/40 text-sm font-black">MyGrowth.Academy</span>
-          <div className="flex items-center gap-5">
-            {[
-              { label: 'FB', href: 'https://www.facebook.com/mygrowth.academy/', hover: 'hover:text-[#1877F2]' },
-              { label: 'IG', href: 'https://www.instagram.com/mygrowth.academy/', hover: 'hover:text-pink-400' },
-              { label: 'YT', href: 'https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ', hover: 'hover:text-red-400' },
-              { label: 'LI', href: 'https://www.linkedin.com/company/mygrowth-academy/', hover: 'hover:text-[#0A66C2]' },
-              { label: 'TT', href: 'https://www.tiktok.com/@mygrowth.academy', hover: 'hover:text-white' },
-              { label: 'Website', href: 'https://www.mygrowthacademy.coach/', hover: 'hover:text-[#00C9A2]' },
-            ].map(({ label, href, hover }) => (
-              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                className={`text-white/30 ${hover} transition-colors text-sm font-bold`}>{label}</a>
-            ))}
-          </div>
-          <a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer"
-            className="text-[#00C9A2] text-sm font-black hover:text-[#00A380] transition-colors">Start Your Audit →</a>
-        </div>
-        <div className="max-w-6xl mx-auto px-6 mt-6 pt-6 border-t border-white/5 text-center text-white/15 text-xs">
-          © 2025 MyGrowth.Academy · Not financial or medical advice. Results vary. Individual outcomes depend on effort and consistency.
-        </div>
-      </footer>
-
+      <footer className="bg-[#111827] py-10"><div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6"><span className="text-white/40 text-sm font-black">MyGrowth.Academy</span><div className="flex items-center gap-5">{[{ label: 'FB', href: 'https://www.facebook.com/mygrowth.academy/', hover: 'hover:text-[#1877F2]' }, { label: 'IG', href: 'https://www.instagram.com/mygrowth.academy/', hover: 'hover:text-pink-400' }, { label: 'YT', href: 'https://www.youtube.com/channel/UCftnOx2THDA2SlgzyWAVPuQ', hover: 'hover:text-red-400' }, { label: 'LI', href: 'https://www.linkedin.com/company/mygrowth-academy/', hover: 'hover:text-[#0A66C2]' }, { label: 'TT', href: 'https://www.tiktok.com/@mygrowth.academy', hover: 'hover:text-white' }, { label: 'Website', href: 'https://www.mygrowthacademy.coach/', hover: 'hover:text-[#00C9A2]' }].map(({ label, href, hover }) => (<a key={label} href={href} target="_blank" rel="noopener noreferrer" className={`text-white/30 ${hover} transition-colors text-sm font-bold`}>{label}</a>))}</div><a href={TYPEFORM_URL} target="_blank" rel="noopener noreferrer" className="text-[#00C9A2] text-sm font-black hover:text-[#00A380] transition-colors">Start Your Audit →</a></div><div className="max-w-6xl mx-auto px-6 mt-6 pt-6 border-t border-white/5 text-center text-white/15 text-xs">© 2025 MyGrowth.Academy · Not financial or medical advice. Results vary. Individual outcomes depend on effort and consistency.</div></footer>
     </main>
   );
 }
