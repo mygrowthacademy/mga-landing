@@ -267,14 +267,14 @@ export default function Home() {
           <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-[#C84739]/15 blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#00C9A2]/5 blur-3xl" />
         </div>
-        <div className="relative max-w-5xl mx-auto px-6 py-28 text-center">
+        <div className="relative max-w-5xl mx-auto px-6 py-12 md:py-28 text-center">
           <FadeIn>
             <div className="inline-flex items-center gap-2 text-xs font-black tracking-[0.25em] text-[#00C9A2] mb-8 border border-[#00C9A2]/25 px-5 py-2 rounded-full bg-[#00C9A2]/5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A2] animate-pulse" />MULTI-GROWTH ARCHITECTURE
             </div>
           </FadeIn>
           <FadeIn delay={100}>
-            <h1 className="text-6xl md:text-8xl font-black text-white leading-[1.0] mb-6 tracking-tight">
+            <h1 className="text-4xl md:text-8xl font-black text-white leading-[1.0] mb-6 tracking-tight">
               The Great<br /><span className="text-[#C84739]">Cancellation.</span>
             </h1>
           </FadeIn>
