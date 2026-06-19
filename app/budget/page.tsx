@@ -14,8 +14,22 @@ export default function Page() {
     return () => obs.disconnect();
   }, []);
 
+  const [bignum, setBignum] = useState(0);
+  useEffect(() => {
+    let n = 0; const target = 50000; let iv: ReturnType<typeof setInterval>;
+    const t = setTimeout(() => {
+      iv = setInterval(() => {
+        n += Math.ceil((target - n) / 14);
+        if (n >= target) { n = target; clearInterval(iv); }
+        setBignum(n);
+      }, 35);
+    }, 500);
+    return () => { clearTimeout(t); clearInterval(iv); };
+  }, []);
+
   const [sent, setSent] = useState(false);
   const [stripClosed, setStripClosed] = useState(false);
+  const [stripOpen, setStripOpen] = useState(false);
   const handleReach = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -52,6 +66,9 @@ export default function Page() {
         .load{opacity:0;transform:translateY(14px);animation:mgarise .9s cubic-bezier(.2,.7,.2,1) forwards}
         @keyframes mgarise{to{opacity:1;transform:none}}
         .mga input::placeholder{color:rgba(255,255,255,.5)}
+        .spark{stroke-dasharray:240;stroke-dashoffset:240;animation:mgadraw 1.8s .5s ease-out forwards}
+        @keyframes mgadraw{to{stroke-dashoffset:0}}
+        @media (prefers-reduced-motion:reduce){.spark{animation:none;stroke-dashoffset:0}}
       `}} />
 
       <div className="mga">
@@ -69,7 +86,11 @@ export default function Page() {
         </nav>
 
         <header id="top" className="relative pt-32 pb-20 md:pt-40 md:pb-24 overflow-hidden">
-          <div className="absolute inset-0 -z-10" style={{ background: 'radial-gradient(800px 480px at 80% 0%, #F6ECDB 0%, #FBF5EC 60%)' }} />
+          <div className="absolute inset-0 -z-10" style={{ background: 'radial-gradient(900px 520px at 70% -8%, rgba(232,199,126,.45) 0%, rgba(246,236,219,.5) 38%, #FBF5EC 70%)' }} />
+          <svg className="absolute right-0 bottom-0 -z-10 w-[70%] h-auto" viewBox="0 0 600 300" fill="none" aria-hidden style={{ opacity: 0.07 }}>
+            <path d="M0 290 L120 250 L220 255 L330 180 L430 120 L520 70 L600 20" stroke="#00C9A2" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M0 290 L600 290" stroke="#272F4F" strokeWidth="2" />
+          </svg>
           <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center">
             <div className="md:col-span-7">
               <p className="load inline-flex items-center gap-2 text-[13px] font-bold tracking-wide c-blue mb-6 pill-blue rounded-full px-4 py-1.5" style={{ animationDelay: '.05s' }}>
@@ -88,11 +109,18 @@ export default function Page() {
               <p className="load mt-7 text-[12px] tracking-[0.12em] uppercase c-muted70" style={{ animationDelay: '.36s' }}>Real people · Real numbers · No stock photos</p>
             </div>
             <div className="load md:col-span-5" style={{ animationDelay: '.44s' }}>
-              <div className="bgcard rounded-[28px] border bd5 soft p-8 relative">
+              <div className="bgcard rounded-[28px] border bd5 soft p-8 relative overflow-hidden">
                 <span className="absolute -top-3 left-7 text-[11px] font-extrabold tracking-wide px-3 py-1 rounded-full" style={{ background: '#00C9A2', color: '#272F4F' }}>A REAL RESULT</span>
-                <div className="fd text-5xl font-semibold c-navy mt-2 mb-3">$50,000</div>
-                <p className="c-ink70 text-[15px] leading-relaxed">The house deposit John &amp; Sarah hit on autopilot, from one transfer they never had to think about again.</p>
-                <div className="h-px my-6" style={{ background: 'rgba(51,49,44,.09)' }} />
+                <svg className="w-full h-14 mt-3 mb-1" viewBox="0 0 300 64" fill="none" aria-hidden>
+                  <path className="spark" d="M4 58 L60 50 L110 52 L160 34 L210 24 L260 12 L296 6" stroke="#00C9A2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="296" cy="6" r="5" fill="#00C9A2" />
+                </svg>
+                <div className="flex items-end gap-2">
+                  <div className="fd text-5xl font-semibold c-navy leading-none">${bignum.toLocaleString()}</div>
+                  <svg className="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M5 19 L19 5 M11 5 H19 V13" stroke="#00C9A2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </div>
+                <p className="c-ink70 text-[15px] leading-relaxed mt-3">The house deposit John &amp; Sarah hit on autopilot, from one transfer they never had to think about again.</p>
+                <div className="h-px my-5" style={{ background: 'rgba(51,49,44,.09)' }} />
                 <p className="c-muted text-[14px] italic font-light">&ldquo;The best part was the week after, when I stopped feeling like I was forgetting something.&rdquo;</p>
               </div>
             </div>
@@ -121,8 +149,11 @@ export default function Page() {
           </div>
         </section>
 
-        <section id="works" className="py-24 md:py-32 bgnavy tcream">
-          <div className="max-w-2xl mx-auto px-6">
+        <section id="works" className="py-24 md:py-32 bgnavy tcream relative overflow-hidden">
+          <svg className="absolute right-0 top-0 w-1/2 h-auto" viewBox="0 0 400 300" fill="none" aria-hidden style={{ opacity: 0.08 }}>
+            <path d="M0 280 L80 250 L150 255 L240 180 L320 110 L400 40" stroke="#00C9A2" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <div className="relative max-w-2xl mx-auto px-6">
             <p className="reveal text-[12px] font-extrabold tracking-[0.16em] uppercase c-jade mb-5">What works instead</p>
             <h2 className="reveal fd text-4xl md:text-5xl leading-[1.1] mb-9">A system that runs without you.</h2>
             <div className="reveal space-y-6 text-[18px] leading-[1.75] tcream75">
@@ -143,20 +174,26 @@ export default function Page() {
               <p className="c-muted mt-3">No stock photos. No invented quotes.</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-5">
-              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">James</span><span className="c-jade font-extrabold text-[14px]">$53K→$130K</span></div><p className="c-ink75 leading-relaxed">&ldquo;One automatic transfer the day my paycheck hit, before I could touch it. That started everything.&rdquo;</p></div>
-              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">Jason</span><span className="c-jade font-extrabold text-[14px]">Debt gone</span></div><p className="c-ink75 leading-relaxed">&ldquo;Four years after getting a real system: no debt, income up thirty-nine percent.&rdquo;</p></div>
-              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">Victor</span><span className="c-jade font-extrabold text-[14px]">Income x3</span></div><p className="c-ink75 leading-relaxed">&ldquo;Machine operator. No degree. Zero savings. I wasn&apos;t looking for inspiration. I was looking for a system.&rdquo;</p></div>
-              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">George</span><span className="c-jade font-extrabold text-[14px]">+300% / 3yr</span></div><p className="c-ink75 leading-relaxed">&ldquo;Grew up hearing money doesn&apos;t grow on trees. I walk into work differently now.&rdquo;</p></div>
+              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">James</span><span className="c-jade font-extrabold text-[14px] inline-flex items-center gap-1"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M5 19 L19 5 M11 5 H19 V13" stroke="#00C9A2" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>$53K→$130K</span></div><p className="c-ink75 leading-relaxed">&ldquo;One automatic transfer the day my paycheck hit, before I could touch it. That started everything.&rdquo;</p></div>
+              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">Jason</span><span className="c-jade font-extrabold text-[14px] inline-flex items-center gap-1"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M5 19 L19 5 M11 5 H19 V13" stroke="#00C9A2" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>Debt gone</span></div><p className="c-ink75 leading-relaxed">&ldquo;Four years after getting a real system: no debt, income up thirty-nine percent.&rdquo;</p></div>
+              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">Victor</span><span className="c-jade font-extrabold text-[14px] inline-flex items-center gap-1"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M5 19 L19 5 M11 5 H19 V13" stroke="#00C9A2" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>Income x3</span></div><p className="c-ink75 leading-relaxed">&ldquo;Machine operator. No degree. Zero savings. I wasn&apos;t looking for inspiration. I was looking for a system.&rdquo;</p></div>
+              <div className="reveal bgcard rounded-[24px] border bd5 soft p-7"><div className="flex items-baseline justify-between mb-3"><span className="fd text-2xl c-navy font-semibold">George</span><span className="c-jade font-extrabold text-[14px] inline-flex items-center gap-1"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M5 19 L19 5 M11 5 H19 V13" stroke="#00C9A2" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>+300% / 3yr</span></div><p className="c-ink75 leading-relaxed">&ldquo;Grew up hearing money doesn&apos;t grow on trees. I walk into work differently now.&rdquo;</p></div>
             </div>
             <p className="reveal c-muted text-[13px] mt-10">None of them started ahead of you. Each began with one honest look at their money. <span className="opacity-60">Results vary; outcomes depend on effort and consistency.</span></p>
           </div>
         </section>
 
-        <section className="py-24 md:py-28 bgsand50">
-          <div className="max-w-2xl mx-auto px-6 reveal">
-            <p className="text-[12px] font-extrabold tracking-[0.16em] uppercase c-blue mb-5">Who we are</p>
-            <h2 className="fd c-navy text-4xl md:text-5xl leading-[1.1] mb-6">We didn&apos;t read this in a book.</h2>
-            <p className="text-[18px] leading-[1.75] c-ink80">Kanth and Shaku spent 30 years getting their own money right, the hard way, through the same mistakes you&apos;re making now. We teach what worked, plainly, because we&apos;ve watched it change people we care about and we never get tired of seeing it happen.</p>
+        <section className="py-20 md:py-28 bgsand50">
+          <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-12 gap-8 md:gap-12 items-center">
+            <div className="reveal md:col-span-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/founders-budget.jpg" alt="Kanth and Shaku, founders of MyGrowth Academy" width={880} height={1100} loading="lazy" className="w-full h-auto rounded-[28px] soft" style={{ border: '5px solid #fff' }} />
+            </div>
+            <div className="reveal md:col-span-7">
+              <p className="text-[12px] font-extrabold tracking-[0.16em] uppercase c-blue mb-5">Who we are</p>
+              <h2 className="fd c-navy text-4xl md:text-5xl leading-[1.1] mb-6">We didn&apos;t read this in a book.</h2>
+              <p className="text-[18px] leading-[1.75] c-ink80">Kanth and Shaku spent 30 years getting their own money right, the hard way, through the same mistakes you&apos;re making now. We teach what worked, plainly, because we&apos;ve watched it change people we care about and we never get tired of seeing it happen.</p>
+            </div>
           </div>
         </section>
 
@@ -171,8 +208,12 @@ export default function Page() {
           </div>
         </section>
 
-        <section id="start" className="py-28 md:py-40 bgnavy tcream text-center">
-          <div className="max-w-2xl mx-auto px-6">
+        <section id="start" className="py-28 md:py-40 bgnavy tcream text-center relative overflow-hidden">
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(700px 420px at 50% 120%, rgba(232,199,126,.22), transparent 70%)' }} />
+          <svg className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[120%] h-auto" viewBox="0 0 600 160" fill="none" aria-hidden style={{ opacity: 0.1 }}>
+            <path d="M0 150 L120 130 L230 134 L340 96 L450 60 L560 26 L600 14" stroke="#00C9A2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <div className="relative max-w-2xl mx-auto px-6">
             <p className="reveal tcream55 mb-4">Stop blaming yourself.</p>
             <h2 className="reveal fd text-4xl md:text-6xl leading-[1.06] mb-8">The system was the problem <span className="italic c-terra">all along.</span></h2>
             <p className="reveal tcream70 text-lg mb-10 max-w-md mx-auto">In 8 minutes, your free Money Selfie shows where your money&apos;s going, your biggest leaks ranked, and the first step to take this week.</p>
@@ -185,32 +226,42 @@ export default function Page() {
           <div className="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-5 text-[13px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/mga-logo.png" alt="MyGrowth Academy" className="h-7 w-auto" />
-            <div className="flex gap-5 font-semibold"><a href="#" className="hover:tcream80">Instagram</a><a href="#" className="hover:tcream80">TikTok</a><a href="#" className="hover:tcream80">YouTube</a><a href="#" className="hover:tcream80">LinkedIn</a></div>
+            <div className="flex flex-wrap justify-center gap-5 font-semibold">
+              <a href="https://www.instagram.com/mygrowth.academy" target="_blank" rel="noopener noreferrer" className="hover:tcream80">Instagram</a>
+              <a href="https://www.tiktok.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="hover:tcream80">TikTok</a>
+              <a href="https://www.youtube.com/@mygrowth.academy" target="_blank" rel="noopener noreferrer" className="hover:tcream80">YouTube</a>
+              <a href="https://www.linkedin.com/in/shakumiriyala/" target="_blank" rel="noopener noreferrer" className="hover:tcream80">LinkedIn</a>
+              <a href="https://www.facebook.com/mygrowth.academy" target="_blank" rel="noopener noreferrer" className="hover:tcream80">Facebook</a>
+            </div>
             <a href={TYPEFORM} className="c-terra font-bold">Get my Money Selfie →</a>
           </div>
-          <p className="max-w-4xl mx-auto px-6 mt-7 pt-6 border-t border-white/5 text-[11px] tcream25 text-center">© 2025 MyGrowth.Academy · Not financial advice. Results vary. Individual outcomes depend on effort and consistency.</p>
+          <p className="max-w-4xl mx-auto px-6 mt-7 pt-6 border-t border-white/5 text-[11px] tcream25 text-center">© 2026 MyGrowth.Academy · Not financial advice. Results vary. Individual outcomes depend on effort and consistency.</p>
         </footer>
 
         <div className="h-40 md:h-24" />
 
         {!stripClosed && (
           <div className="fixed bottom-0 inset-x-0 z-50 border-t border-white/10" style={{ background: '#272F4F' }}>
-            <div className="max-w-6xl mx-auto px-5 py-3 flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
-              <div className="flex-1 min-w-0">
-                <p className="text-white font-bold text-[15px] leading-tight">Have a question before you start?</p>
-                <p className="text-white/55 text-[13px] leading-tight">Drop your email and question — Kanth or Shaku replies within 24 hours.</p>
+            <form onSubmit={handleReach} className="max-w-6xl mx-auto px-5 py-3 flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
+              <div className="flex items-start gap-3 md:flex-1 md:min-w-0">
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-bold text-[15px] leading-tight">Have a question before you start?</p>
+                  <p className="text-white/55 text-[13px] leading-tight">Drop your email and question — Kanth or Shaku replies within 24 hours.</p>
+                </div>
+                <button type="button" onClick={() => setStripOpen((o) => !o)} className="md:hidden rounded-lg px-4 py-2.5 font-bold text-[13px] text-white whitespace-nowrap" style={{ background: '#C84739' }}>{stripOpen ? 'Close' : 'Ask'}</button>
+                <button type="button" onClick={() => setStripClosed(true)} aria-label="Dismiss" className="md:hidden text-white/40 text-2xl leading-none px-1">×</button>
               </div>
               {sent ? (
                 <p className="text-white text-[14px] md:pr-6">Thanks. Kanth or Shaku will reply within 24 hours.</p>
               ) : (
-                <form onSubmit={handleReach} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                  <input type="email" name="email" required placeholder="your@email.com" className="rounded-lg px-4 py-2.5 text-[14px] text-white outline-none" style={{ background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.18)' }} />
-                  <input type="text" name="message" placeholder="Question..." className="rounded-lg px-4 py-2.5 text-[14px] text-white outline-none" style={{ background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.18)' }} />
-                  <button type="submit" className="rounded-lg px-5 py-2.5 font-bold text-[14px] text-white whitespace-nowrap" style={{ background: '#C84739' }}>Reach Out →</button>
-                </form>
+                <div className={`${stripOpen ? 'flex' : 'hidden'} md:flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5`}>
+                  <input type="email" name="email" required placeholder="your@email.com" className="rounded-lg px-4 py-3 text-[15px] text-white outline-none w-full sm:w-auto" style={{ background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.18)' }} />
+                  <input type="text" name="message" placeholder="Question..." className="rounded-lg px-4 py-3 text-[15px] text-white outline-none w-full sm:w-auto" style={{ background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.18)' }} />
+                  <button type="submit" className="rounded-lg px-5 py-3 font-bold text-[15px] text-white whitespace-nowrap" style={{ background: '#C84739' }}>Reach Out →</button>
+                </div>
               )}
-              <button onClick={() => setStripClosed(true)} aria-label="Dismiss" className="text-white/40 hover:text-white/80 text-2xl leading-none px-1 self-end md:self-center">×</button>
-            </div>
+              <button type="button" onClick={() => setStripClosed(true)} aria-label="Dismiss" className="hidden md:block text-white/40 hover:text-white/80 text-2xl leading-none px-1 self-center">×</button>
+            </form>
           </div>
         )}
       </div>
