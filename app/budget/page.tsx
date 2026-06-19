@@ -109,7 +109,7 @@ export default function Page() {
               <p className="load mt-7 text-[12px] tracking-[0.12em] uppercase c-muted70" style={{ animationDelay: '.36s' }}>Real people · Real numbers · No stock photos</p>
             </div>
             <div className="load md:col-span-5" style={{ animationDelay: '.44s' }}>
-              <div className="bgcard rounded-[28px] border bd5 soft p-8 relative overflow-hidden">
+              <div className="bgcard rounded-[28px] border bd5 soft p-8 relative">
                 <span className="absolute -top-3 left-7 text-[11px] font-extrabold tracking-wide px-3 py-1 rounded-full" style={{ background: '#00C9A2', color: '#272F4F' }}>A REAL RESULT</span>
                 <svg className="w-full h-14 mt-3 mb-1" viewBox="0 0 300 64" fill="none" aria-hidden>
                   <path className="spark" d="M4 58 L60 50 L110 52 L160 34 L210 24 L260 12 L296 6" stroke="#00C9A2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
