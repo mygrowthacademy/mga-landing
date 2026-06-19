@@ -186,10 +186,16 @@ export default function Page() {
 
         {/* WHO */}
         <section className="py-16 md:py-28 bgnavy text-white">
-          <div className="max-w-3xl mx-auto px-5 reveal">
-            <p className="text-[12px] font-bold tracking-[0.18em] uppercase c-jade mb-5">Who we are</p>
-            <h2 className="fd text-4xl md:text-6xl leading-[1.06] mb-7">We didn&apos;t learn this from a book.</h2>
-            <p className="text-[18px] md:text-xl leading-[1.7] text-white/75 max-w-[58ch]">Kanth and Shaku spent 30 years building this in their own lives first: the income, the energy, the direction. We teach it because we&apos;ve watched it change people we care about, and we&apos;ve never gotten tired of seeing it happen.</p>
+          <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-12 gap-8 md:gap-12 items-center">
+            <div className="reveal md:col-span-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/founders-broad.jpg" alt="Kanth and Shaku, founders of MyGrowth Academy" width={880} height={1100} loading="lazy" className="w-full h-auto rounded-3xl" style={{ boxShadow: '0 30px 60px -28px rgba(0,0,0,.6)', border: '1px solid rgba(255,255,255,.12)' }} />
+            </div>
+            <div className="reveal md:col-span-7">
+              <p className="text-[12px] font-bold tracking-[0.18em] uppercase c-jade mb-5">Who we are</p>
+              <h2 className="fd text-4xl md:text-6xl leading-[1.06] mb-7">We didn&apos;t learn this from a book.</h2>
+              <p className="text-[18px] md:text-xl leading-[1.7] text-white/75 max-w-[58ch]">Kanth and Shaku spent 30 years building this in their own lives first: the income, the energy, the direction. We teach it because we&apos;ve watched it change people we care about, and we&apos;ve never gotten tired of seeing it happen.</p>
+            </div>
           </div>
         </section>
 
